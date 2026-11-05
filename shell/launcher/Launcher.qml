@@ -49,14 +49,14 @@ Item {
     Corner { corner: "tl"; x: Math.max(0, root.width - root.r); y: 0; size: root.r }
     Corner { corner: "bl"; x: Math.max(0, root.width - root.r); y: root.height - root.r; size: root.r }
 
+    // Panel menempel ke bingkai atas & bawah, jadi sisi kanannya lurus tanpa radius:
+    // lengkungnya cukup dari telinga cekung (radius di sini menyisakan celah sabit).
     Rectangle {
         id: body
         width: root.panelWidth
         x: root.width - root.r - root.panelWidth
         height: parent.height
         color: Theme.frame
-        radius: root.r
-        Rectangle { width: root.r; height: parent.height; color: Theme.frame }
 
         Column {
             anchors { fill: parent; margins: 28 }

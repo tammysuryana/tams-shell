@@ -68,6 +68,13 @@ if [ $LINK -eq 1 ]; then
 else
   cp -r "$REPO/shell" "$DEST" && ok "shell -> $DEST"
 fi
+# Pengaturan bawaan (sama dengan services/Settings.qml); yang sudah ada tidak ditimpa
+SET="$CFG/tams/settings.json"
+if [ ! -f "$SET" ]; then
+  mkdir -p "$CFG/tams"
+  printf '{\n    "terminal": "kitty",\n    "wallpaper": "",\n    "workspaces": 5\n}\n' > "$SET"
+  ok "pengaturan -> $SET"
+fi
 
 # 3. Sambungkan ke Hyprland (shortcut + jalan otomatis)
 echo -e "\n${B}3/3 Hyprland${N}"
