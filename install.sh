@@ -30,7 +30,11 @@ for a in "$@"; do
     --uninstall)
       rm -rf "$DEST" && ok "shell dihapus dari $DEST"
       for f in "$HYPR/hyprland.lua" "$HYPR/hyprland.conf"; do
-        [ -f "$f" ] && sed -i '/tams-shell/d' "$f"
+        [ -f "$f" ] || continue
+        # Super + R dikembalikan ke menu semula, baru baris tams-shell lainnya dihapus
+        sed -i -E -e 's/hl\.dsp\.global\("tams:launcher"\)\)   -- tams-shell \(dulu: menu\)$/hl.dsp.exec_cmd(menu))/' \
+                  -e 's/global, tams:launcher   # tams-shell \(dulu: exec, \$menu\)$/exec, $menu/' "$f"
+        sed -i '/tams-shell/d' "$f"
       done
       rm -f "$HYPR/tams-shell.lua" "$HYPR/tams-shell.conf"
       ok "baris tams-shell di config Hyprland dihapus"
@@ -104,6 +108,25 @@ else
   fi
 fi
 
+# Super + R bawaan Hyprland membuka menu lain (rofi/wofi); arahkan ke launcher tams-shell.
+# Baris yang diubah diberi tanda supaya --uninstall bisa mengembalikannya.
+SR_LUA='^(\s*)hl\.bind\(mainMod \.\. " \+ R", hl\.dsp\.exec_cmd\(menu\)\)\s*$'
+SR_CONF='^(\s*)bind\s*=\s*\$mainMod,\s*R,\s*exec,\s*\$menu\s*$'
+for f in "$HYPR/hyprland.lua" "$HYPR/hyprland.conf"; do
+  [ -f "$f" ] || continue
+  if [[ "$f" == *.lua ]]; then pat="$SR_LUA"; else pat="$SR_CONF"; fi
+  grep -qE "$pat" "$f" || continue
+  if tanya "Super + R sekarang membuka menu aplikasi lain. Arahkan ke launcher tams-shell?"; then
+    cp "$f" "$f.bak-super-r"
+    if [[ "$f" == *.lua ]]; then
+      sed -i -E "s/$pat/\1hl.bind(mainMod .. \" + R\", hl.dsp.global(\"tams:launcher\"))   -- tams-shell (dulu: menu)/" "$f"
+    else
+      sed -i -E "s/$pat/\1bind = \$mainMod, R, global, tams:launcher   # tams-shell (dulu: exec, \$menu)/" "$f"
+    fi
+    ok "Super + R -> launcher tams-shell (cadangan: $(basename "$f").bak-super-r)"
+  fi
+done
+
 # Shell/bar lain yang ikut jalan akan tumpang tindih
 for other in waybar ags eww noctalia-shell; do
   pgrep -x "$other" >/dev/null && warn "$other sedang jalan — matikan dari config Hyprland supaya tidak tumpang tindih dengan tams-shell"
@@ -114,7 +137,7 @@ fi
 
 echo -e "\n${G}${B}Selesai!${N}"
 echo "  Coba sekarang tanpa logout:   qs -c tams"
-echo "  Launcher: Super + Space · Dashboard: Super + A atau klik jam"
+echo "  Launcher: Super + Space (atau Super + R) · Dashboard: Super + A atau klik jam"
 echo "  Pengaturan: ~/.config/tams/settings.json"
 echo
 echo -e "${C}Terima kasih sudah memakai tams-shell! 💖${N} Dukung di ${B}https://saweria.co/tamsrich${N}"
