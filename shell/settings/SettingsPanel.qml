@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import Quickshell
 import Quickshell.Io
 import qs.config
@@ -12,6 +13,7 @@ Item {
     id: root
 
     property bool open: false
+    property bool here: false      // layar ini yang sedang aktif
     readonly property int panelWidth: 440
     readonly property int r: Theme.panelRadius
 
@@ -155,7 +157,7 @@ Item {
                 Heading { text: "Wallpaper"; Layout.topMargin: 18 }
                 Txt {
                     Layout.fillWidth: true
-                    text: "Gambar dari ~/Pictures dan ~/Pictures/Wallpapers"
+                    text: "Klik gambar untuk memasang. Daftar diambil dari ~/Pictures dan ~/Pictures/Wallpapers"
                     color: Theme.muted; font.pixelSize: 13; wrapMode: Text.Wrap
                 }
                 GridLayout {
@@ -195,6 +197,12 @@ Item {
                 }
 
                 Btn {
+                    Layout.topMargin: 8
+                    label: "Pilih file lain…"
+                    onClicked: Panels.openWallpaperPicker()
+                }
+
+                Btn {
                     Layout.topMargin: 22
                     Layout.bottomMargin: 8
                     label: "Kembalikan tampilan bawaan"
@@ -202,6 +210,19 @@ Item {
                 }
             }
         }
+    }
+
+    // Pemilih file wallpaper dari folder mana saja
+    Connections {
+        target: Panels
+        function onPickWallpaper() { if (root.here) picker.open() }
+    }
+    FileDialog {
+        id: picker
+        title: "Pilih wallpaper"
+        nameFilters: ["Gambar (*.jpg *.jpeg *.png *.webp)"]
+        currentFolder: "file://" + Quickshell.env("HOME") + "/Pictures"
+        onAccepted: Settings.setWallpaper(decodeURIComponent(selectedFile.toString().replace(/^file:\/\//, "")))
     }
 
     // Daftar gambar wallpaper (dibaca ulang tiap panel dibuka)

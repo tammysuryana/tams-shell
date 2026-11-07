@@ -14,6 +14,14 @@ Singleton {
     property bool wifiList: false     // dashboard dibuka langsung dengan daftar WiFi terbuka
     property string screenName: ""
 
+    signal pickWallpaper()   // buka pemilih file wallpaper (di layar yang aktif)
+
+    function openWallpaperPicker() {
+        root.screenName = activeScreen()
+        closeAll()
+        root.pickWallpaper()
+    }
+
     function activeScreen() {
         return Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : ""
     }

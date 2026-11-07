@@ -47,7 +47,7 @@ Disable any other bar/shell you were running.
 `Super + Space` launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Esc` or click outside to close.
 
 ```bash
-qs -c tams ipc call tams launcher | dashboard | wifi | settings | lock | close
+qs -c tams ipc call tams launcher | dashboard | wifi | settings | wallpaper | lock | close
 ```
 
 Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global, tams:settings`.
@@ -58,7 +58,7 @@ Open the **Settings** panel with `Super + I`, `Super + Esc` or the cog in the da
 dark / light theme, colors picked by hand or **generated from the wallpaper** (frame, panels and window borders follow;
 GTK/Chromium apps follow dark/light),
 window gaps (inner/outer), border width, corner rounding, inactive window opacity, blur, animations,
-accent color, side frame width, workspace count, terminal and wallpaper (from `~/Pictures`).
+accent color, side frame width, workspace count, terminal and wallpaper (click one from `~/Pictures`, or **Pilih file lain…** to pick any file).
 Window settings are applied to the running Hyprland via `hyprctl` (and re-applied after a config reload);
 your Hyprland config files are not modified.
 

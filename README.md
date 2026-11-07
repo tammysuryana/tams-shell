@@ -84,6 +84,7 @@ qs -c tams ipc call tams launcher    # buka/tutup launcher
 qs -c tams ipc call tams dashboard   # buka/tutup dashboard
 qs -c tams ipc call tams wifi        # buka dashboard dengan daftar WiFi
 qs -c tams ipc call tams settings    # buka/tutup pengaturan
+qs -c tams ipc call tams wallpaper   # pilih file wallpaper
 qs -c tams ipc call tams lock        # kunci layar (hyprlock)
 qs -c tams ipc call tams close       # tutup semua panel
 ```
@@ -103,7 +104,8 @@ Buka panel **Pengaturan** dengan `Super + I`, `Super + Esc`, atau ikon roda di d
   transparansi jendela tidak aktif, blur, animasi.
 - **Bingkai**: tebal bingkai samping, jumlah workspace.
 - **Aplikasi**: terminal yang dipakai.
-- **Wallpaper**: pilih dari `~/Pictures` / `~/Pictures/Wallpapers`.
+- **Wallpaper**: klik gambar dari `~/Pictures` / `~/Pictures/Wallpapers`, atau **Pilih file lain…**
+  untuk mengambil dari folder mana saja.
 
 Pengaturan jendela diterapkan ke Hyprland yang sedang jalan (lewat `hyprctl`) dan diterapkan lagi
 setiap kali config Hyprland dimuat ulang. File config Hyprland kamu tidak diubah.

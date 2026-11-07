@@ -109,6 +109,7 @@ Scope {
         SettingsPanel {
             id: settings
             open: Panels.settings && root.here
+            here: root.here
             x: overlay.width - Theme.edge - width
             y: Theme.barHeight
             height: overlay.height - Theme.barHeight - Theme.edge
