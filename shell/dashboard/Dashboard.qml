@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Mpris
-import Quickshell.Bluetooth
 import qs.config
 import qs.services
 import qs.widgets
@@ -74,20 +73,18 @@ Item {
                         MouseArea { id: cogMouse; anchors { fill: parent; margins: -6 } hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Panels.toggleSettings() }
                     }
                 }
-                WifiPanel { Layout.fillWidth: true; active: root.open }
-                Switch {
+                WifiPanel {
+                    id: wifiPanel
                     Layout.fillWidth: true
-                    readonly property var a: Bluetooth.defaultAdapter
-                    readonly property var dev: {
-                        if (!a) return null
-                        const d = a.devices.values
-                        for (let i = 0; i < d.length; i++) if (d[i].connected) return d[i]
-                        return null
-                    }
-                    visible: a !== null
-                    label: "Bluetooth"; sub: dev ? dev.name : ""
-                    checked: a ? a.enabled : false
-                    onToggled: if (a) a.enabled = !a.enabled
+                    active: root.open
+                    onExpandedChanged: if (expanded) btPanel.expanded = false
+                }
+                BluetoothPanel {
+                    id: btPanel
+                    Layout.fillWidth: true
+                    active: root.open
+                    // satu daftar terbuka saja supaya dashboard tidak terlalu tinggi
+                    onExpandedChanged: if (expanded) wifiPanel.expanded = false
                 }
                 Switch { Layout.fillWidth: true; label: "Jangan ganggu"; checked: Notifs.dnd; onToggled: Notifs.dnd = !Notifs.dnd }
                 Switch { Layout.fillWidth: true; label: "Lampu malam"; checked: NightLight.on; onToggled: NightLight.toggle() }

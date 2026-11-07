@@ -21,6 +21,8 @@ Built with [Quickshell](https://quickshell.org), written from scratch, MIT licen
   Night light toggles, volume & brightness sliders, notification list, lock / log out / reboot / power off.
 - **Wi-Fi without a terminal**: click Wi-Fi in the top frame (or "WiFi" in the dashboard) to scan nearby
   networks, join a new one with its password, disconnect or forget. Needs NetworkManager (wpa_supplicant or iwd backend).
+- **Bluetooth without a terminal**: click "Bluetooth" in the dashboard to discover devices, pair & connect
+  headsets/speakers/mice/phones, disconnect or forget. Devices that need a typed PIN still go through `bluetoothctl`.
 - **Launcher** from the left edge: search apps, `=` to calculate, `>` to run a command. Fully keyboard driven.
 - **Notifications** slide out of the right edge (built-in notification server, no dunst/mako needed).
 - **Volume & brightness OSD** on the right edge.
@@ -47,7 +49,7 @@ Disable any other bar/shell you were running.
 `Super + Space` launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Esc` or click outside to close.
 
 ```bash
-qs -c tams ipc call tams launcher | dashboard | wifi | settings | wallpaper | lock | close
+qs -c tams ipc call tams launcher | dashboard | wifi | bluetooth | settings | wallpaper | lock | close
 ```
 
 Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global, tams:settings`.

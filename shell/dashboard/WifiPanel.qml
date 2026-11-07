@@ -88,56 +88,13 @@ ColumnLayout {
         }
     }
 
-    // Baris judul: teks (klik = buka daftar) + sakelar
-    Item {
+    ExpandSwitch {
         Layout.fillWidth: true
-        implicitHeight: 42
-
-        Row {
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width - 56
-            spacing: 6
-            Txt {
-                id: head
-                text: "WiFi" + (Net.wifiNetwork ? "  ·  " + Net.wifiNetwork.name : "")
-                elide: Text.ElideRight
-                width: Math.min(implicitWidth, parent.width - 24)
-            }
-            Txt {
-                visible: Net.wifiOn
-                mono: true; font.pixelSize: 16; color: Theme.muted
-                text: Icons.chevronDown
-                rotation: root.expanded ? 180 : 0
-                Behavior on rotation { NumberAnimation { duration: 150 } }
-            }
-        }
-        MouseArea {
-            anchors { left: parent.left; top: parent.top; bottom: parent.bottom; right: track.left }
-            cursorShape: Qt.PointingHandCursor
-            enabled: Net.wifiOn
-            onClicked: { root.expanded = !root.expanded; root.prompt = null; root.message = "" }
-        }
-
-        Rectangle {
-            id: track
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            width: 40; height: 22; radius: 11
-            color: Net.wifiOn ? Theme.accent : Theme.surface2
-            Behavior on color { ColorAnimation { duration: 150 } }
-            Rectangle {
-                width: 16; height: 16; radius: 8
-                y: 3
-                x: Net.wifiOn ? 21 : 3
-                color: Net.wifiOn ? Theme.frame : Theme.muted
-                Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-            }
-            MouseArea {
-                anchors { fill: parent; margins: -8 }
-                cursorShape: Qt.PointingHandCursor
-                onClicked: Net.toggleWifi()
-            }
-        }
+        label: "WiFi" + (Net.wifiNetwork ? "  ·  " + Net.wifiNetwork.name : "")
+        checked: Net.wifiOn
+        expanded: root.expanded
+        onToggled: Net.toggleWifi()
+        onExpandClicked: { root.expanded = !root.expanded; root.prompt = null; root.message = "" }
     }
 
     // Daftar jaringan
@@ -175,7 +132,7 @@ ColumnLayout {
 
             Txt {
                 visible: root.message !== ""
-                Layout.fillWidth: true
+                Layout.preferredWidth: col.width - 16
                 Layout.margins: 8
                 text: root.message
                 color: Theme.bad
@@ -280,18 +237,5 @@ ColumnLayout {
                 }
             }
         }
-    }
-
-    component SmallBtn: Rectangle {
-        id: b
-        property string label: ""
-        signal clicked()
-        property alias containsMouse: m.containsMouse
-        implicitWidth: t.implicitWidth + 16
-        implicitHeight: 26
-        radius: 8
-        color: m.containsMouse ? Theme.accent : Theme.line
-        Txt { id: t; anchors.centerIn: parent; text: b.label; font.pixelSize: 12; color: m.containsMouse ? Theme.frame : Theme.text }
-        MouseArea { id: m; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: b.clicked() }
     }
 }

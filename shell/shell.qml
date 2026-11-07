@@ -19,12 +19,13 @@ ShellRoot {
         }
     }
 
-    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / settings / wallpaper / lock / close)
+    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / bluetooth / settings / wallpaper / lock / close)
     IpcHandler {
         target: "tams"
         function launcher(): void { Panels.toggleLauncher() }
         function dashboard(): void { Panels.toggleDashboard() }
         function wifi(): void { Panels.openWifi() }
+        function bluetooth(): void { Panels.openBluetooth() }
         function lock(): void { Panels.closeAll(); Power.lock() }
         function settings(): void { Panels.toggleSettings() }
         function wallpaper(): void { Panels.openWallpaperPicker() }
