@@ -47,7 +47,7 @@ Disable any other bar/shell you were running.
 `Super + Space` launcher · `Super + A` dashboard · `Esc` or click outside to close.
 
 ```bash
-qs -c tams ipc call tams launcher | dashboard | wifi | close
+qs -c tams ipc call tams launcher | dashboard | wifi | lock | close
 ```
 
 Hyprland binds use `global, tams:launcher` and `global, tams:dashboard`.

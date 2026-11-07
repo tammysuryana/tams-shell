@@ -50,7 +50,7 @@ echo -e "${C}${B}tams-shell — installer${N}"
 if [ $PKGS -eq 1 ]; then
   echo -e "\n${B}1/3 Paket${N}"
   sudo pacman -S --needed --noconfirm \
-    quickshell qt6-svg qt6-imageformats hyprland hyprsunset \
+    quickshell qt6-svg qt6-imageformats hyprland hyprsunset hyprlock \
     ttf-jetbrains-mono-nerd networkmanager brightnessctl bluez bluez-utils \
     pipewire wireplumber libnotify
   ok "paket terpasang"

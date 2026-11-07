@@ -48,7 +48,7 @@ cd ~/tams-shell
 
 Installer akan:
 1. Memasang paket yang dibutuhkan. Semuanya dari repo resmi Arch: `quickshell`, `ttf-jetbrains-mono-nerd`,
-   `brightnessctl`, `hyprsunset`, `networkmanager`, `bluez`, `pipewire`, dll.
+   `brightnessctl`, `hyprsunset`, `hyprlock`, `networkmanager`, `bluez`, `pipewire`, dll.
 2. Menyalin shell ke `~/.config/quickshell/tams`.
 3. Menyambungkan ke Hyprland: jalan otomatis saat login + shortcut. Sebelum mengubah `hyprland.lua` /
    `hyprland.conf`, installer bertanya dulu dan membuat cadangan.
@@ -82,6 +82,7 @@ Dari terminal / skrip:
 qs -c tams ipc call tams launcher    # buka/tutup launcher
 qs -c tams ipc call tams dashboard   # buka/tutup dashboard
 qs -c tams ipc call tams wifi        # buka dashboard dengan daftar WiFi
+qs -c tams ipc call tams lock        # kunci layar (hyprlock)
 qs -c tams ipc call tams close       # tutup semua panel
 ```
 
