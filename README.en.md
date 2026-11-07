@@ -14,6 +14,12 @@ Built with [Quickshell](https://quickshell.org), written from scratch, MIT licen
 |---|---|
 | ![Dashboard](docs/dashboard.jpg) | ![Launcher](docs/launcher.jpg) |
 
+| Settings (`Super + I`) |
+|---|
+| ![Settings](docs/settings.jpg) |
+
+<sub>Wallpaper in the screenshots: [Konachan #409824](https://konachan.com/post/show/409824), not part of this repo.</sub>
+
 ## Features
 
 - **Top frame**: logo, workspace numbers (click to switch), window title, clock, CPU, RAM, Wi-Fi, volume, battery.

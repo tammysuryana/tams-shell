@@ -14,6 +14,12 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
 |---|---|
 | ![Dashboard](docs/dashboard.jpg) | ![Launcher](docs/launcher.jpg) |
 
+| Pengaturan (`Super + I`) |
+|---|
+| ![Pengaturan](docs/settings.jpg) |
+
+<sub>Wallpaper di screenshot: [Konachan #409824](https://konachan.com/post/show/409824), bukan bagian dari repo ini.</sub>
+
 ---
 
 ## Fitur
