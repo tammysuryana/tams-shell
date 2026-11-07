@@ -44,7 +44,7 @@ Disable any other bar/shell you were running.
 
 ## Keys & IPC
 
-`Super + Space` launcher · `Super + A` dashboard · `Super + I` settings · `Esc` or click outside to close.
+`Super + Space` launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Esc` or click outside to close.
 
 ```bash
 qs -c tams ipc call tams launcher | dashboard | wifi | settings | lock | close
@@ -54,7 +54,7 @@ Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global
 
 ## Settings
 
-Open the **Settings** panel with `Super + I` or the cog in the dashboard; every change applies instantly:
+Open the **Settings** panel with `Super + I`, `Super + Esc` or the cog in the dashboard; every change applies instantly:
 window gaps (inner/outer), border width, corner rounding, inactive window opacity, blur, animations,
 accent color, side frame width, workspace count, terminal and wallpaper (from `~/Pictures`).
 Window settings are applied to the running Hyprland via `hyprctl` (and re-applied after a config reload);

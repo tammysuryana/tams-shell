@@ -72,7 +72,7 @@ qs -c tams
 |---|---|
 | `Super + Space` | Buka/tutup launcher |
 | `Super + A` | Buka/tutup dashboard |
-| `Super + I` | Buka/tutup pengaturan |
+| `Super + I` / `Super + Esc` | Buka/tutup pengaturan |
 | Klik jam | Dashboard |
 | Klik logo | Launcher |
 | `Esc` / klik di luar panel | Tutup panel |
@@ -95,7 +95,7 @@ ke tombol lain.
 
 ## Pengaturan
 
-Buka panel **Pengaturan** dengan `Super + I` atau ikon roda di dashboard. Semua perubahan langsung terlihat:
+Buka panel **Pengaturan** dengan `Super + I`, `Super + Esc`, atau ikon roda di dashboard. Semua perubahan langsung terlihat:
 
 - **Jendela**: jarak antar jendela, jarak ke bingkai, tebal garis tepi, lengkung sudut,
   transparansi jendela tidak aktif, blur, animasi.
