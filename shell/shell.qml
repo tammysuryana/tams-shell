@@ -8,6 +8,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.services
 import qs.frame
+import qs.config
 
 ShellRoot {
     Variants {
@@ -34,6 +35,8 @@ ShellRoot {
     GlobalShortcut { appid: "tams"; name: "dashboard"; description: "Buka/tutup dashboard"; onPressed: Panels.toggleDashboard() }
     GlobalShortcut { appid: "tams"; name: "settings"; description: "Buka/tutup pengaturan"; onPressed: Panels.toggleSettings() }
 
-    // Terapkan tampilan jendela (jarak, garis tepi, sudut, ...) dari settings.json ke Hyprland
-    Component.onCompleted: HyprLook.look
+    // Terapkan tampilan jendela (jarak, garis tepi, sudut, warna tepi, ...) ke Hyprland
+    Binding { target: HyprLook; property: "activeBorder"; value: Theme.accent }
+    Binding { target: HyprLook; property: "inactiveBorder"; value: Theme.line }
+    Binding { target: HyprLook; property: "dark"; value: Theme.dark }
 }

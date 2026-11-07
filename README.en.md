@@ -55,13 +55,15 @@ Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global
 ## Settings
 
 Open the **Settings** panel with `Super + I`, `Super + Esc` or the cog in the dashboard; every change applies instantly:
+dark / light theme, colors picked by hand or **generated from the wallpaper** (frame, panels and window borders follow;
+GTK/Chromium apps follow dark/light),
 window gaps (inner/outer), border width, corner rounding, inactive window opacity, blur, animations,
 accent color, side frame width, workspace count, terminal and wallpaper (from `~/Pictures`).
 Window settings are applied to the running Hyprland via `hyprctl` (and re-applied after a config reload);
 your Hyprland config files are not modified.
 
 Everything is stored in `~/.config/tams/settings.json` (live-reloaded, can be edited by hand):
-`wallpaper`, `terminal`, `workspaces`, `accent`, `edge`, `gapsIn`, `gapsOut`, `border`, `rounding`,
+`wallpaper`, `terminal`, `workspaces`, `mode` (`dark`/`light`), `colorSource` (`manual`/`wallpaper`), `accent`, `edge`, `gapsIn`, `gapsOut`, `border`, `rounding`,
 `blur`, `animations`, `inactiveOpacity`. Other colors and fonts: `config/Theme.qml`.
 
 ## License

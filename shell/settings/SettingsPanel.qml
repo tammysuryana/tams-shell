@@ -55,20 +55,23 @@ Item {
                 width: parent.width
                 spacing: 4
 
-                Heading { text: "Jendela" }
-                Range { label: "Jarak antar jendela"; key: "gapsIn"; min: 0; max: 20 }
-                Range { label: "Jarak ke bingkai"; key: "gapsOut"; min: 0; max: 40 }
-                Range { label: "Tebal garis tepi"; key: "border"; min: 0; max: 6 }
-                Range { label: "Lengkung sudut"; key: "rounding"; min: 0; max: 24 }
-                Range { label: "Jendela tidak aktif"; key: "inactiveOpacity"; min: 0.5; max: 1; step: 0.05; percent: true }
-                Switch { Layout.fillWidth: true; label: "Blur"; checked: Settings.blur; onToggled: Settings.set("blur", !Settings.blur) }
-                Switch { Layout.fillWidth: true; label: "Animasi"; checked: Settings.animations; onToggled: Settings.set("animations", !Settings.animations) }
-
-                Heading { text: "Bingkai"; Layout.topMargin: 18 }
-                Txt { text: "Warna aksen"; color: Theme.muted; font.pixelSize: 13 }
+                Heading { text: "Tema" }
+                Segmented {
+                    options: [{ v: "dark", t: "Gelap" }, { v: "light", t: "Terang" }]
+                    current: Settings.mode
+                    onPicked: v => Settings.set("mode", v)
+                }
+                Txt { text: "Sumber warna"; color: Theme.muted; font.pixelSize: 13; Layout.topMargin: 10 }
+                Segmented {
+                    options: [{ v: "manual", t: "Pilih sendiri" }, { v: "wallpaper", t: "Dari wallpaper" }]
+                    current: Settings.colorSource
+                    onPicked: v => Settings.set("colorSource", v)
+                }
+                // Warna aksen pilihan sendiri
                 Flow {
+                    visible: Settings.colorSource !== "wallpaper"
                     Layout.fillWidth: true
-                    Layout.topMargin: 6
+                    Layout.topMargin: 10
                     Layout.bottomMargin: 6
                     spacing: 8
                     Repeater {
@@ -84,6 +87,45 @@ Item {
                         }
                     }
                 }
+                // Contoh palet yang dibuat dari wallpaper
+                RowLayout {
+                    visible: Settings.colorSource === "wallpaper"
+                    Layout.fillWidth: true
+                    Layout.topMargin: 10
+                    Layout.bottomMargin: 6
+                    spacing: 8
+                    Repeater {
+                        model: [Theme.accent, Theme.accent2, Theme.surface2, Theme.text]
+                        Rectangle {
+                            required property color modelData
+                            width: 30; height: 30; radius: 15
+                            color: modelData
+                            border.width: 1
+                            border.color: Theme.line
+                        }
+                    }
+                    Txt {
+                        Layout.fillWidth: true
+                        Layout.leftMargin: 4
+                        wrapMode: Text.Wrap
+                        font.pixelSize: 12
+                        color: Theme.muted
+                        text: !WallColors.ready ? "Membaca warna wallpaper…"
+                            : WallColors.seed === null ? "Wallpaper hampir tanpa warna, dipakai warna aksen pilihan"
+                            : "Diambil dari wallpaper, ikut berubah saat wallpaper diganti"
+                    }
+                }
+
+                Heading { text: "Jendela"; Layout.topMargin: 18 }
+                Range { label: "Jarak antar jendela"; key: "gapsIn"; min: 0; max: 20 }
+                Range { label: "Jarak ke bingkai"; key: "gapsOut"; min: 0; max: 40 }
+                Range { label: "Tebal garis tepi"; key: "border"; min: 0; max: 6 }
+                Range { label: "Lengkung sudut"; key: "rounding"; min: 0; max: 24 }
+                Range { label: "Jendela tidak aktif"; key: "inactiveOpacity"; min: 0.5; max: 1; step: 0.05; percent: true }
+                Switch { Layout.fillWidth: true; label: "Blur"; checked: Settings.blur; onToggled: Settings.set("blur", !Settings.blur) }
+                Switch { Layout.fillWidth: true; label: "Animasi"; checked: Settings.animations; onToggled: Settings.set("animations", !Settings.animations) }
+
+                Heading { text: "Bingkai"; Layout.topMargin: 18 }
                 Range { label: "Tebal bingkai samping"; key: "edge"; min: 0; max: 24 }
                 Range { label: "Jumlah workspace"; key: "workspaces"; min: 1; max: 10 }
 
@@ -168,6 +210,25 @@ Item {
         property var files: []
         command: ["sh", "-c", "find \"$HOME/Pictures\" -maxdepth 2 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \\) 2>/dev/null | sort | head -n 30"]
         stdout: StdioCollector { onStreamFinished: walls.files = text.split("\n").filter(l => l !== "") }
+    }
+
+    // Pilihan berdampingan (segmented): options = [{ v: nilai, t: teks }]
+    component Segmented: RowLayout {
+        id: ch
+        property var options: []
+        property string current: ""
+        signal picked(string v)
+        Layout.fillWidth: true
+        spacing: 6
+        Repeater {
+            model: ch.options
+            Btn {
+                Layout.fillWidth: true
+                label: modelData.t
+                active: ch.current === modelData.v
+                onClicked: ch.picked(modelData.v)
+            }
+        }
     }
 
     component Heading: Txt {

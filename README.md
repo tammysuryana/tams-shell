@@ -97,9 +97,11 @@ ke tombol lain.
 
 Buka panel **Pengaturan** dengan `Super + I`, `Super + Esc`, atau ikon roda di dashboard. Semua perubahan langsung terlihat:
 
+- **Tema**: gelap / terang, warna dipilih sendiri atau **diambil otomatis dari wallpaper**
+  (bingkai, panel, garis tepi jendela ikut berubah; aplikasi GTK/Chromium ikut gelap/terang).
 - **Jendela**: jarak antar jendela, jarak ke bingkai, tebal garis tepi, lengkung sudut,
   transparansi jendela tidak aktif, blur, animasi.
-- **Bingkai**: warna aksen, tebal bingkai samping, jumlah workspace.
+- **Bingkai**: tebal bingkai samping, jumlah workspace.
 - **Aplikasi**: terminal yang dipakai.
 - **Wallpaper**: pilih dari `~/Pictures` / `~/Pictures/Wallpapers`.
 
@@ -113,6 +115,8 @@ Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit lang
   "wallpaper": "/home/kamu/Gambar/wallpaper.jpg",
   "terminal": "kitty",
   "workspaces": 5,
+  "mode": "dark",
+  "colorSource": "manual",
   "accent": "#e0af68",
   "edge": 10,
   "gapsIn": 2,
@@ -127,6 +131,7 @@ Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit lang
 
 - `wallpaper`: kosongkan (`""`) untuk wallpaper bawaan.
 - `workspaces`: jumlah nomor workspace yang selalu tampil.
+- `mode`: `"dark"` atau `"light"`. `colorSource`: `"manual"` (pakai `accent`) atau `"wallpaper"`.
 
 Warna lain dan font ada di `~/.config/quickshell/tams/config/Theme.qml`.
 

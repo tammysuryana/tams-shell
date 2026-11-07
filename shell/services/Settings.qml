@@ -12,10 +12,14 @@ Singleton {
     readonly property string defaultWallpaper: Qt.resolvedUrl("../assets/wallpaper.jpg")
     readonly property string wallpaper: adapter.wallpaper !== "" ? "file://" + adapter.wallpaper : defaultWallpaper
     readonly property string wallpaperPath: adapter.wallpaper
+    // Path file biasa (bawaan pun), untuk yang tidak bisa membaca alamat qs: seperti ColorQuantizer
+    readonly property string wallpaperFile: adapter.wallpaper !== "" ? adapter.wallpaper : Quickshell.shellPath("assets/wallpaper.jpg")
     readonly property string terminal: adapter.terminal
     readonly property int workspaces: adapter.workspaces
 
     // Tampilan shell
+    readonly property string mode: adapter.mode                 // "dark" | "light"
+    readonly property string colorSource: adapter.colorSource   // "manual" | "wallpaper"
     readonly property color accent: adapter.accent
     readonly property int edge: adapter.edge
 
@@ -29,7 +33,7 @@ Singleton {
     readonly property real inactiveOpacity: adapter.inactiveOpacity
 
     readonly property var defaults: ({
-        accent: "#e0af68", edge: 10, workspaces: 5, terminal: "kitty",
+        mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, workspaces: 5, terminal: "kitty",
         gapsIn: 2, gapsOut: 2, border: 2, rounding: 12,
         blur: true, animations: true, inactiveOpacity: 1.0
     })
@@ -53,6 +57,8 @@ Singleton {
             property string wallpaper: ""
             property string terminal: "kitty"
             property int workspaces: 5
+            property string mode: "dark"
+            property string colorSource: "manual"
             property string accent: "#e0af68"
             property int edge: 10
             property int gapsIn: 2

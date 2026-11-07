@@ -102,7 +102,7 @@ Item {
                     width: parent.width
                     height: 62
                     radius: 16
-                    color: on ? Theme.surface : mouse.containsMouse ? Qt.rgba(1, 1, 1, 0.03) : "transparent"
+                    color: on ? Theme.surface : mouse.containsMouse ? Theme.hover : "transparent"
                     Rectangle { visible: parent.on; width: 3; height: parent.height - 16; anchors.verticalCenter: parent.verticalCenter; radius: 2; color: Theme.accent }
 
                     Rectangle {
