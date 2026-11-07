@@ -13,12 +13,13 @@ Singleton {
 
     signal changed()
 
-    function set(v) {
+    // quiet: tanpa memunculkan indikator (mis. diredupkan otomatis saat ditinggal)
+    function set(v, quiet) {
         v = Math.max(0.01, Math.min(1, v))
         root.value = v
-        setProc.command = ["brightnessctl", "-q", "set", Math.round(v * 100) + "%"]
+        setProc.command = ["brightnessctl", "-q", "-c", "backlight", "set", Math.round(v * 100) + "%"]
         setProc.running = true
-        root.changed()
+        if (!quiet) root.changed()
     }
 
     Process {
