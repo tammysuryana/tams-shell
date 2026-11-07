@@ -22,7 +22,7 @@ Item {
     clip: true
     Behavior on width { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
 
-    onOpenChanged: if (open) { term.text = Settings.terminal; walls.running = true }
+    onOpenChanged: if (open) { term.text = Settings.terminal; walls.running = true; Displays.refresh() }
 
     readonly property var accents: ["#e0af68", "#ff9e64", "#f7768e", "#bb9af7", "#7aa2f7", "#7dcfff", "#73daca", "#9ece6a", "#c0caf5"]
 
@@ -130,6 +130,12 @@ Item {
                 Heading { text: "Bingkai"; Layout.topMargin: 18 }
                 Range { label: "Tebal bingkai samping"; key: "edge"; min: 0; max: 24 }
                 Range { label: "Jumlah workspace"; key: "workspaces"; min: 1; max: 10 }
+
+                Heading { text: "Layar"; Layout.topMargin: 18 }
+                Repeater {
+                    model: Displays.monitors
+                    DisplayCard { required property var modelData; m: modelData; Layout.fillWidth: true; Layout.bottomMargin: 6 }
+                }
 
                 Heading { text: "Aplikasi"; Layout.topMargin: 18 }
                 Txt { text: "Terminal (dipakai launcher & WiFi enterprise)"; color: Theme.muted; font.pixelSize: 13 }

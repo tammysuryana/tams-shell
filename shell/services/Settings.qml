@@ -32,6 +32,9 @@ Singleton {
     readonly property bool animations: adapter.animations
     readonly property real inactiveOpacity: adapter.inactiveOpacity
 
+    // Layar (diterapkan oleh Displays): { "HDMI-A-1": { position, mode, scale }, ... }
+    readonly property var displays: adapter.displays
+
     readonly property var defaults: ({
         mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, workspaces: 5, terminal: "kitty",
         gapsIn: 2, gapsOut: 2, border: 2, rounding: 12,
@@ -40,6 +43,11 @@ Singleton {
 
     function setWallpaper(path) { adapter.wallpaper = path }
     function set(key, value) { if (adapter[key] !== value) adapter[key] = value }
+    function setDisplay(name, patch) {
+        const all = Object.assign({}, adapter.displays)
+        all[name] = Object.assign({}, all[name], patch)
+        adapter.displays = all
+    }
     function resetLook() {
         for (const k in root.defaults)
             if (k !== "terminal") adapter[k] = root.defaults[k]
@@ -68,6 +76,7 @@ Singleton {
             property bool blur: true
             property bool animations: true
             property real inactiveOpacity: 1.0
+            property var displays: ({})
         }
     }
 }
