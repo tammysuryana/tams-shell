@@ -46,6 +46,10 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
   `>` untuk menjalankan perintah. Bisa dipakai penuh dengan keyboard.
 - **Notifikasi** keluar dari sisi kanan bingkai (server notifikasi bawaan, tidak perlu dunst/mako).
 - **Indikator volume & kecerahan** muncul di sisi kanan saat diubah.
+- **Kunci otomatis saat ditinggal**: redupkan layar → kunci (hyprlock) → matikan layar → tidur, waktunya
+  diatur di Pengaturan → Saat ditinggal (bawaan: kunci 5 menit, layar mati 10 menit). Video yang sedang
+  diputar menundanya, dan sakelar **Tetap menyala** di dashboard menahannya (ikon kopi di bar). Layar juga
+  dikunci sebelum laptop tidur / ditutup. Tidak perlu hypridle.
 - **Screenshot**: `Super + Shift + S` pilih area (seret kotak, atau klik satu jendela), `PrtSc` layar ini,
   `Shift + PrtSc` semua layar, atau tombol Area / Layar / Semua di dashboard. Tersimpan di
   **`~/Pictures/Screenshots/Screenshot_<tanggal>_<jam>.png`** dan langsung disalin ke clipboard (tinggal
@@ -53,7 +57,8 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
   Pengaturan → Aplikasi.
 - **Daftar pintasan** (`Super + /`) keluar dari bingkai bawah: semua kombinasi tombol yang aktif di
   Hyprland beserta fungsinya, dibaca langsung dari `hyprctl binds` (pintasan buatan sendiri ikut tampil;
-  beri `description` di bind-mu supaya keterangannya pas).
+  beri `description` di bind-mu supaya keterangannya pas). Bagian **Touchpad** berisi gesture dari config
+  Hyprland (`hl.gesture` / `gesture =`) dan pengaturan touchpad yang aktif (scroll natural, klik & ketuk jari).
 - Banyak monitor: tiap layar punya bingkai sendiri, panel muncul di layar yang aktif.
 - Teks bahasa Indonesia, nama hari/bulan ikut bahasa sistem.
 
@@ -114,6 +119,7 @@ qs -c tams ipc call tams bluetooth   # buka dashboard dengan daftar Bluetooth
 qs -c tams ipc call tams audio       # buka dashboard dengan daftar keluaran suara
 qs -c tams ipc call tams keys        # buka/tutup daftar pintasan
 qs -c tams ipc call tams screenshot area   # screenshot (area / screen / all)
+qs -c tams ipc call tams caffeine    # nyala/matikan "Tetap menyala"
 qs -c tams ipc call tams settings    # buka/tutup pengaturan
 qs -c tams ipc call tams wallpaper   # pilih file wallpaper
 qs -c tams ipc call tams lock        # kunci layar (hyprlock)
@@ -129,10 +135,12 @@ ke tombol lain.
 
 Buka panel **Pengaturan** dengan `Super + I`, `Super + Esc`, atau ikon roda di dashboard. Semua perubahan langsung terlihat:
 
-- **Tema**: gelap / terang, warna dipilih sendiri atau **diambil otomatis dari wallpaper**
+- **Tema**: gelap / terang (ikon ☾ / ☀, juga bisa diganti cepat lewat ikon di dashboard), warna dipilih sendiri atau **diambil otomatis dari wallpaper**
   (bingkai, panel, garis tepi jendela ikut berubah; aplikasi GTK/Chromium ikut gelap/terang).
 - **Jendela**: jarak antar jendela, jarak ke bingkai, tebal garis tepi, lengkung sudut,
   transparansi jendela tidak aktif, blur, animasi.
+- **Saat ditinggal**: redupkan layar, kunci layar, matikan layar, tidur (masing-masing Mati atau sekian
+  menit), dan kunci saat laptop tidur / ditutup.
 - **Bingkai**: tebal bingkai samping, jumlah workspace, gaya nomor workspace di pojok kiri atas:
   angka `1 2 3`, titik `• • •`, romawi `I II III`, atau kanji `一 二 三` (butuh font CJK, mis. `noto-fonts-cjk`).
 - **Layar**: peta layar dengan ukuran sebenarnya; **seret** kotak monitor tambahan (HDMI/DP) ke mana saja
@@ -173,6 +181,8 @@ Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit lang
 - `wallpaper`: kosongkan (`""`) untuk wallpaper bawaan.
 - `workspaces`: jumlah nomor workspace yang selalu tampil.
 - `workspaceStyle`: `number` / `dot` / `roman` / `kanji`.
+- `idleDim`, `idleLock`, `idleScreenOff`, `idleSuspend`: detik tanpa sentuhan sebelum layar diredupkan /
+  dikunci / dimatikan / komputer tidur; `0` = tidak dipakai. `lockOnSleep`: kunci sebelum tidur.
 - `screenshotDir`: folder screenshot; kosongkan (`""`) untuk `~/Pictures/Screenshots`.
 - `displays`: per nama layar (lihat `hyprctl monitors`). `position`: `left` / `right` / `up` / `down` /
   `custom` (pakai `at`: `"XxY"` relatif ke layar laptop) / `mirror` / `off` (untuk layar laptop = "hanya HDMI");

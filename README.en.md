@@ -38,12 +38,17 @@ Built with [Quickshell](https://quickshell.org), written from scratch, MIT licen
 - **Launcher** from the left edge: search apps, `=` to calculate, `>` to run a command. Fully keyboard driven.
 - **Notifications** slide out of the right edge (built-in notification server, no dunst/mako needed).
 - **Volume & brightness OSD** on the right edge.
+- **Auto-lock when idle**: dim → lock (hyprlock) → screen off → suspend, timings set in Settings → Saat ditinggal
+  (default: lock after 5 minutes, screen off after 10). Playing video postpones it, the **Tetap menyala** (stay awake)
+  switch in the dashboard holds it (coffee icon in the bar), and the screen is locked before the laptop sleeps or the lid
+  closes. No hypridle needed.
 - **Screenshots**: `Super + Shift + S` select an area (drag, or click a window), `PrtSc` this screen,
   `Shift + PrtSc` all screens, or the Area / Layar / Semua buttons in the dashboard. Saved to
   **`~/Pictures/Screenshots/Screenshot_<date>_<time>.png`** and copied to the clipboard; the notification shows a
   preview with **Buka** (open) / **Buka folder** buttons. The folder can be changed in Settings → Aplikasi.
 - **Shortcut list** (`Super + /`) slides out of the bottom edge: every active Hyprland keybind and what it does,
-  read live from `hyprctl binds` (your own binds show up too; give them a `description` for a nice label).
+  read live from `hyprctl binds` (your own binds show up too; give them a `description` for a nice label). A **Touchpad**
+  section lists the gestures from your Hyprland config and the active touchpad settings (natural scroll, finger clicks/taps).
 - Multi-monitor: one frame per screen, panels open on the focused screen.
 
 ## Install
@@ -67,7 +72,7 @@ Disable any other bar/shell you were running.
 `Super + Space` (or `Super + R`) launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Super + /` keyboard shortcut list · `Super + Shift + S` / `PrtSc` / `Shift + PrtSc` screenshot · `Esc` or click outside to close.
 
 ```bash
-qs -c tams ipc call tams launcher | dashboard | wifi | bluetooth | audio | keys | screenshot <area|screen|all> | settings | wallpaper | lock | close
+qs -c tams ipc call tams launcher | dashboard | wifi | bluetooth | audio | keys | screenshot <area|screen|all> | caffeine | settings | wallpaper | lock | close
 ```
 
 Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global, tams:settings`.
@@ -75,7 +80,7 @@ Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global
 ## Settings
 
 Open the **Settings** panel with `Super + I`, `Super + Esc` or the cog in the dashboard; every change applies instantly:
-dark / light theme, colors picked by hand or **generated from the wallpaper** (frame, panels and window borders follow;
+dark / light theme (moon / sun icons, also a quick toggle icon in the dashboard), colors picked by hand or **generated from the wallpaper** (frame, panels and window borders follow;
 GTK/Chromium apps follow dark/light),
 window gaps (inner/outer), border width, corner rounding, inactive window opacity, blur, animations,
 accent color, side frame width, workspace count, workspace indicator style (numbers, dots, Roman numerals or kanji), terminal and wallpaper (click one from `~/Pictures`, or **Pilih file lain…** to pick any file).
@@ -88,7 +93,7 @@ your Hyprland config files are not modified.
 
 Everything is stored in `~/.config/tams/settings.json` (live-reloaded, can be edited by hand):
 `wallpaper`, `terminal`, `workspaces`, `mode` (`dark`/`light`), `colorSource` (`manual`/`wallpaper`), `accent`, `edge`, `gapsIn`, `gapsOut`, `border`, `rounding`,
-`blur`, `animations`, `inactiveOpacity`, `displays`, `screenshotDir`, `workspaceStyle`. Other colors and fonts: `config/Theme.qml`.
+`blur`, `animations`, `inactiveOpacity`, `displays`, `screenshotDir`, `workspaceStyle`, `idleDim`, `idleLock`, `idleScreenOff`, `idleSuspend` (seconds, 0 = off), `lockOnSleep`. Other colors and fonts: `config/Theme.qml`.
 
 ## License
 

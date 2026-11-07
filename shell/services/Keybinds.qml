@@ -3,17 +3,29 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 
 // Daftar pintasan keyboard yang sedang aktif di Hyprland (hyprctl binds), dikelompokkan dan diberi
 // keterangan. Keterangan diambil dari bind itu sendiri (description), kalau tidak ada ditebak dari
 // dispatcher dan tombolnya. Pintasan yang mirip digabung (mis. Super + 1 … 0).
+// Gesture touchpad dibaca dari file config Hyprland (hyprctl tidak punya daftarnya), ditambah
+// pengaturan touchpad yang sedang aktif (scroll natural, klik & ketuk beberapa jari).
 Singleton {
     id: root
 
     // [{ title, rows: [{ mods: ["Super"], keys: ["1", "0"], range: true, text }] }]
-    property var sections: []
+    readonly property var sections: {
+        const out = root._binds.slice()
+        if (root._touch.length) {
+            const i = out.findIndex(s => s.title === "Tombol media")
+            out.splice(i < 0 ? out.length : i, 0, { title: "Touchpad", rows: root._touch })
+        }
+        return out
+    }
+    property var _binds: []
+    property var _touch: []
 
-    function refresh() { proc.running = true }
+    function refresh() { proc.running = true; gestProc.running = true }
 
     readonly property var modBits: [[64, "Super"], [4, "Ctrl"], [8, "Alt"], [1, "Shift"]]
 
@@ -112,7 +124,81 @@ Singleton {
             for (const r of groups[sec]) r.range = r.keys.length > 2 && r.keys.every(k => /^\d$/.test(k))
             out.push({ title: titles[sec] || sec, rows: groups[sec] })
         }
-        root.sections = out
+        root._binds = out
+    }
+
+    readonly property var gestureDirs: ({
+        horizontal: "← →", vertical: "↑ ↓", left: "←", right: "→", up: "↑", down: "↓",
+        swipe: "geser", pinch: "cubit", pinchin: "cubit masuk", pinchout: "cubit keluar"
+    })
+    readonly property var gestureText: ({
+        workspace: "Pindah workspace", move: "Pindahkan jendela", resize: "Ubah ukuran jendela",
+        float: "Jendela melayang / tertata", fullscreen: "Layar penuh", close: "Tutup jendela",
+        special: "Workspace khusus", cursorZoom: "Perbesar sekitar kursor"
+    })
+
+    // teks = isi file config Hyprland, lalu "@@TOUCHPAD@@", lalu keluaran hyprctl getoption
+    function parseGestures(text) {
+        const [cfg, opts] = text.split("@@TOUCHPAD@@")
+        const rows = []
+        const add = (fingers, dir, mods, action, fn) => {
+            let t = root.gestureText[action]
+            if (!t && fn) {
+                const g = /global\(\s*"(?:tams:)?([^"]+)"/.exec(fn)
+                t = g ? (root.tamsText[g[1]] || g[1]) : "Fungsi khusus"
+            }
+            // jumlah jari ditulis seperti tombol pengubah (tanpa "/"), arahnya sebagai tombol
+            const m = mods ? mods.split(/[\s+]+/).filter(x => x).map(x => x[0] + x.slice(1).toLowerCase()) : []
+            rows.push({ mods: m.concat([fingers + " jari"]), keys: [root.gestureDirs[dir] || dir], text: t || action, range: false })
+        }
+        if (Hyprland.usingLua) {
+            const src = cfg.split("\n").map(l => l.replace(/^\s*--.*$/, "")).join("\n")
+            const re = /hl\.gesture\(\s*\{([\s\S]*?)\}\s*\)/g
+            let m
+            while ((m = re.exec(src)) !== null) {
+                const body = m[1]
+                const get = k => { const r = new RegExp(k + "\\s*=\\s*\"([^\"]*)\"").exec(body); return r ? r[1] : "" }
+                const f = /fingers\s*=\s*(\d+)/.exec(body)
+                if (!f) continue
+                add(f[1], get("direction"), get("mods"), get("action"), /action\s*=\s*function/.test(body) ? body : "")
+            }
+        } else {
+            for (const line of cfg.split("\n")) {
+                const g = /^\s*gesture\s*=\s*(.+)$/.exec(line.replace(/#.*$/, ""))
+                if (!g) continue
+                const parts = g[1].split(",").map(x => x.trim())
+                let mods = ""
+                const rest = parts.slice(2).filter(x => {
+                    if (x.startsWith("mod:")) { mods = x.slice(4).trim(); return false }
+                    return !x.startsWith("scale:")
+                })
+                add(parts[0], parts[1], mods, rest[0] || "", rest[0] === "dispatcher" ? rest.join(",") : "")
+            }
+        }
+        // Pengaturan touchpad yang sedang dipakai
+        const o = {}
+        for (const j of (opts || "").split("\n")) {
+            try { const v = JSON.parse(j); o[v.option.split(":").pop()] = v.bool ?? !!v.int } catch (e) {}
+        }
+        if (o.natural_scroll !== undefined)
+            rows.unshift({ mods: ["2 jari"], keys: ["geser"], text: o.natural_scroll ? "Scroll (natural)" : "Scroll", range: false })
+        if (o.clickfinger_behavior) {
+            rows.push({ mods: [], keys: ["Klik 2 jari"], text: "Klik kanan", range: false })
+            rows.push({ mods: [], keys: ["Klik 3 jari"], text: "Klik tengah", range: false })
+        }
+        if (o["tap-to-click"]) rows.push({ mods: [], keys: ["Ketuk 1 / 2 / 3 jari"], text: "Klik / kanan / tengah", range: false })
+        root._touch = rows
+    }
+
+    Process {
+        id: gestProc
+        command: ["sh", "-c", 'd="${XDG_CONFIG_HOME:-$HOME/.config}/hypr"; '
+            + 'find "$d" -maxdepth 3 -type f -name "*.$1" -exec cat {} + 2>/dev/null; echo "@@TOUCHPAD@@"; '
+            + 'for o in natural_scroll clickfinger_behavior tap-to-click; do hyprctl getoption "input:touchpad:$o" -j | tr -d "\\n"; echo; done',
+            "sh", Hyprland.usingLua ? "lua" : "conf"]
+        stdout: StdioCollector {
+            onStreamFinished: { try { root.parseGestures(text) } catch (e) { console.warn("Keybinds gesture: " + e) } }
+        }
     }
 
     Process {
