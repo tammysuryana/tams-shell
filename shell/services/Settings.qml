@@ -30,7 +30,7 @@ Singleton {
 
     readonly property var defaults: ({
         accent: "#e0af68", edge: 10, workspaces: 5, terminal: "kitty",
-        gapsIn: 4, gapsOut: 6, border: 2, rounding: 12,
+        gapsIn: 2, gapsOut: 2, border: 2, rounding: 12,
         blur: true, animations: true, inactiveOpacity: 1.0
     })
 
@@ -55,8 +55,8 @@ Singleton {
             property int workspaces: 5
             property string accent: "#e0af68"
             property int edge: 10
-            property int gapsIn: 4
-            property int gapsOut: 6
+            property int gapsIn: 2
+            property int gapsOut: 2
             property int border: 2
             property int rounding: 12
             property bool blur: true

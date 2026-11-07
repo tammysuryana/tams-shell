@@ -72,7 +72,7 @@ fi
 SET="$CFG/tams/settings.json"
 if [ ! -f "$SET" ]; then
   mkdir -p "$CFG/tams"
-  printf '{\n    "terminal": "kitty",\n    "wallpaper": "",\n    "workspaces": 5,\n    "accent": "#e0af68",\n    "edge": 10,\n    "gapsIn": 4,\n    "gapsOut": 6,\n    "border": 2,\n    "rounding": 12,\n    "blur": true,\n    "animations": true,\n    "inactiveOpacity": 1\n}\n' > "$SET"
+  printf '{\n    "terminal": "kitty",\n    "wallpaper": "",\n    "workspaces": 5,\n    "accent": "#e0af68",\n    "edge": 10,\n    "gapsIn": 2,\n    "gapsOut": 2,\n    "border": 2,\n    "rounding": 12,\n    "blur": true,\n    "animations": true,\n    "inactiveOpacity": 1\n}\n' > "$SET"
   ok "pengaturan -> $SET"
 fi
 
