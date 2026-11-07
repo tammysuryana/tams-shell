@@ -19,7 +19,10 @@ ShellRoot {
         }
     }
 
-    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / bluetooth / audio / keys / screenshot area|screen|all / settings / wallpaper / lock / close)
+    // Redupkan / kunci / matikan layar / tidur saat ditinggal
+    IdleWatcher {}
+
+    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / bluetooth / audio / keys / screenshot area|screen|all / caffeine / settings / wallpaper / lock / close)
     IpcHandler {
         target: "tams"
         function launcher(): void { Panels.toggleLauncher() }
@@ -29,6 +32,7 @@ ShellRoot {
         function audio(): void { Panels.openAudio() }
         function keys(): void { Panels.toggleKeys() }
         function screenshot(mode: string): void { Screenshot.take(mode) }
+        function caffeine(): void { Idle.caffeine = !Idle.caffeine }
         function lock(): void { Panels.closeAll(); Power.lock() }
         function settings(): void { Panels.toggleSettings() }
         function wallpaper(): void { Panels.openWallpaperPicker() }

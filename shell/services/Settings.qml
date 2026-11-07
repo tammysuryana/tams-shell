@@ -34,6 +34,13 @@ Singleton {
     readonly property bool animations: adapter.animations
     readonly property real inactiveOpacity: adapter.inactiveOpacity
 
+    // Saat ditinggal (detik tanpa sentuhan, 0 = tidak dipakai; dijalankan oleh Idle)
+    readonly property int idleDim: adapter.idleDim
+    readonly property int idleLock: adapter.idleLock
+    readonly property int idleScreenOff: adapter.idleScreenOff
+    readonly property int idleSuspend: adapter.idleSuspend
+    readonly property bool lockOnSleep: adapter.lockOnSleep
+
     // Layar (diterapkan oleh Displays): { "HDMI-A-1": { position, mode, scale }, ... }
     readonly property var displays: adapter.displays
 
@@ -82,6 +89,11 @@ Singleton {
             property bool animations: true
             property real inactiveOpacity: 1.0
             property var displays: ({})
+            property int idleDim: 0
+            property int idleLock: 300
+            property int idleScreenOff: 600
+            property int idleSuspend: 0
+            property bool lockOnSleep: true
         }
     }
 }

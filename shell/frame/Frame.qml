@@ -50,6 +50,8 @@ Scope {
         exclusiveZone: Theme.barHeight
         color: Theme.frame
         Bar { anchors.fill: parent; monitor: root.monitor }
+        // "Tetap menyala": tahan kunci / layar mati selama sakelarnya nyala
+        IdleInhibitor { window: top; enabled: Idle.caffeine }
     }
 
     // Sisi kiri, kanan, bawah

@@ -66,6 +66,14 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     Heading { text: "Sistem"; Layout.fillWidth: true }
+                    // Gelap ↔ terang
+                    Txt {
+                        mono: true; font.pixelSize: 18; color: modeMouse.containsMouse ? Theme.accent : Theme.muted
+                        text: Settings.mode === "dark" ? Icons.moon : Icons.sun
+                        Layout.bottomMargin: 6
+                        Layout.rightMargin: 10
+                        MouseArea { id: modeMouse; anchors { fill: parent; margins: -6 } hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Settings.set("mode", Settings.mode === "dark" ? "light" : "dark") }
+                    }
                     Txt {
                         mono: true; font.pixelSize: 18; color: keysMouse.containsMouse ? Theme.accent : Theme.muted
                         text: Icons.keyboard
@@ -101,6 +109,7 @@ Item {
                 }
                 Switch { Layout.fillWidth: true; label: "Jangan ganggu"; checked: Notifs.dnd; onToggled: Notifs.dnd = !Notifs.dnd }
                 Switch { Layout.fillWidth: true; label: "Lampu malam"; checked: NightLight.on; onToggled: NightLight.toggle() }
+                Switch { Layout.fillWidth: true; label: "Tetap menyala"; checked: Idle.caffeine; onToggled: Idle.caffeine = !Idle.caffeine }
                 Slider { Layout.fillWidth: true; Layout.topMargin: 12; icon: Audio.muted ? Icons.volumeMute : Icons.volume; value: Audio.volume; onMoved: v => Audio.setVolume(v) }
                 Slider { Layout.fillWidth: true; visible: Brightness.available; icon: Icons.brightness; value: Brightness.value; onMoved: v => Brightness.set(v) }
             }

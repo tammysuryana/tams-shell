@@ -12,6 +12,8 @@ Row {
 
     readonly property alias net: net
 
+    // "Tetap menyala" aktif: kunci otomatis ditahan
+    Txt { visible: Idle.caffeine; mono: true; font.pixelSize: 16; color: Theme.accent; text: Icons.coffee }
     Txt { mono: true; font.pixelSize: 13; color: Theme.muted; text: "CPU " + Math.round(SysStats.cpu * 100) + "%" }
     Txt { mono: true; font.pixelSize: 13; color: Theme.muted; text: "RAM " + SysStats.memUsed.toFixed(1).replace(".", ",") + "G" }
 

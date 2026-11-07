@@ -57,13 +57,14 @@ Item {
                 width: parent.width
                 spacing: 4
 
-                Heading { text: "Tema" }
-                Segmented {
-                    options: [{ v: "dark", t: "Gelap" }, { v: "light", t: "Terang" }]
-                    current: Settings.mode
-                    onPicked: v => Settings.set("mode", v)
+                RowLayout {
+                    Layout.fillWidth: true
+                    Heading { text: "Tema"; Layout.fillWidth: true }
+                    // Gelap / terang: dua ikon ringkas
+                    Btn { icon: Icons.moon; pad: 8; active: Settings.mode === "dark"; onClicked: Settings.set("mode", "dark") }
+                    Btn { icon: Icons.sun; pad: 8; active: Settings.mode === "light"; onClicked: Settings.set("mode", "light") }
                 }
-                Txt { text: "Sumber warna"; color: Theme.muted; font.pixelSize: 13; Layout.topMargin: 10 }
+                Txt { text: "Sumber warna"; color: Theme.muted; font.pixelSize: 13; Layout.topMargin: 6 }
                 Segmented {
                     options: [{ v: "manual", t: "Pilih sendiri" }, { v: "wallpaper", t: "Dari wallpaper" }]
                     current: Settings.colorSource
@@ -137,6 +138,20 @@ Item {
                     current: Settings.workspaceStyle
                     onPicked: v => Settings.set("workspaceStyle", v)
                 }
+
+                Heading { text: "Saat ditinggal"; Layout.topMargin: 18 }
+                Txt {
+                    Layout.fillWidth: true
+                    wrapMode: Text.Wrap
+                    font.pixelSize: 12
+                    color: Theme.muted
+                    text: "Dihitung dari sentuhan terakhir. Video yang sedang diputar dan sakelar \"Tetap menyala\" di dashboard menundanya."
+                }
+                IdleChoice { label: "Redupkan layar"; key: "idleDim"; visible: Brightness.available; options: [0, 60, 120, 300] }
+                IdleChoice { label: "Kunci layar"; key: "idleLock"; options: [0, 180, 300, 600, 900] }
+                IdleChoice { label: "Matikan layar"; key: "idleScreenOff"; options: [0, 300, 600, 900, 1800] }
+                IdleChoice { label: "Tidur (suspend)"; key: "idleSuspend"; options: [0, 900, 1800, 3600] }
+                Switch { Layout.fillWidth: true; Layout.topMargin: 6; label: "Kunci saat laptop tidur / ditutup"; checked: Settings.lockOnSleep; onToggled: Settings.set("lockOnSleep", !Settings.lockOnSleep) }
 
                 Heading { text: "Layar"; Layout.topMargin: 18 }
                 Repeater {
@@ -292,6 +307,23 @@ Item {
                 active: ch.current === modelData.v
                 onClicked: ch.picked(modelData.v)
             }
+        }
+    }
+
+    // Pilihan waktu (detik) untuk satu langkah saat ditinggal: Mati / 3 mnt / 5 mnt ...
+    component IdleChoice: ColumnLayout {
+        id: ic
+        property string label
+        property string key
+        property var options: []
+        Layout.fillWidth: true
+        Layout.topMargin: 6
+        spacing: 4
+        Txt { text: ic.label; font.pixelSize: 13 }
+        Segmented {
+            options: ic.options.map(s => ({ v: String(s), t: s === 0 ? "Mati" : (s >= 3600 ? s / 3600 + " jam" : s / 60 + " mnt") }))
+            current: String(Settings[ic.key])
+            onPicked: v => Settings.set(ic.key, Number(v))
         }
     }
 
