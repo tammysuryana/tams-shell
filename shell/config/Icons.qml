@@ -38,4 +38,13 @@ Singleton {
     readonly property string cpu: g(0xF061A)
     readonly property string memory: g(0xF035B)
     readonly property string chevron: g(0xF0142)
+    readonly property string chevronDown: g(0xF0140)
+    readonly property string eye: g(0xF0208)
+    readonly property string eyeOff: g(0xF0209)
+
+    // Ikon kekuatan sinyal WiFi (0..1), versi bergembok untuk jaringan berkunci
+    function wifiStrength(s, locked) {
+        const lvl = s > 0.75 ? 3 : s > 0.5 ? 2 : s > 0.25 ? 1 : 0
+        return g([0xF091F, 0xF0922, 0xF0925, 0xF0928][lvl] + (locked ? 2 : 0))
+    }
 }

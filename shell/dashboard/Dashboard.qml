@@ -65,7 +65,7 @@ Item {
                 Layout.alignment: Qt.AlignTop
                 spacing: 0
                 Heading { text: "Sistem" }
-                Switch { Layout.fillWidth: true; label: "WiFi"; sub: Net.wifiNetwork ? Net.wifiNetwork.name : ""; checked: Net.wifiOn; onToggled: Net.toggleWifi() }
+                WifiPanel { Layout.fillWidth: true; active: root.open }
                 Switch {
                     Layout.fillWidth: true
                     readonly property var a: Bluetooth.defaultAdapter

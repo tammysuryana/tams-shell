@@ -71,7 +71,8 @@ Scope {
         WlrLayershell.namespace: "tams-overlay"
         // OnDemand, bukan Exclusive: di Hyprland fokus Exclusive langsung membatalkan HyprlandFocusGrab
         // di bawah -> launcher tertutup lagi begitu dibuka. Fokus keyboard tetap didapat lewat grab.
-        WlrLayershell.keyboardFocus: launcher.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        // Dashboard juga butuh keyboard (kolom kata sandi WiFi).
+        WlrLayershell.keyboardFocus: launcher.open || dashboard.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         exclusionMode: ExclusionMode.Ignore
         anchors { top: true; bottom: true; left: true; right: true }
         color: "transparent"

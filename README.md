@@ -23,6 +23,9 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
 - **Dashboard** keluar dari bingkai atas: jam besar, pemutar musik (Spotify, browser, dll.),
   sakelar WiFi / Bluetooth / Jangan ganggu / Lampu malam, slider volume & kecerahan,
   daftar notifikasi, tombol kunci / keluar / ulang / matikan.
+- **WiFi tanpa terminal**: klik WiFi di bingkai atas (atau tulisan "WiFi" di dashboard) untuk
+  memindai jaringan sekitar, sambung ke jaringan baru dengan kata sandi, putuskan, atau lupakan.
+  Butuh NetworkManager (backend wpa_supplicant maupun iwd).
 - **Launcher** keluar dari sisi kiri: cari aplikasi, `=` untuk menghitung (`=1920*1080`),
   `>` untuk menjalankan perintah. Bisa dipakai penuh dengan keyboard.
 - **Notifikasi** keluar dari sisi kanan bingkai (server notifikasi bawaan, tidak perlu dunst/mako).
@@ -78,6 +81,7 @@ Dari terminal / skrip:
 ```bash
 qs -c tams ipc call tams launcher    # buka/tutup launcher
 qs -c tams ipc call tams dashboard   # buka/tutup dashboard
+qs -c tams ipc call tams wifi        # buka dashboard dengan daftar WiFi
 qs -c tams ipc call tams close       # tutup semua panel
 ```
 

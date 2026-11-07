@@ -18,11 +18,12 @@ ShellRoot {
         }
     }
 
-    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / close)
+    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / close)
     IpcHandler {
         target: "tams"
         function launcher(): void { Panels.toggleLauncher() }
         function dashboard(): void { Panels.toggleDashboard() }
+        function wifi(): void { Panels.openWifi() }
         function close(): void { Panels.closeAll() }
     }
 

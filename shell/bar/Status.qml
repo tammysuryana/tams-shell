@@ -5,15 +5,18 @@ import qs.config
 import qs.services
 import qs.widgets
 
-// Bagian kanan bar: CPU, RAM, jaringan, volume, baterai. Klik = buka dashboard.
+// Bagian kanan bar: CPU, RAM, jaringan, volume, baterai. Klik = buka dashboard (klik WiFi = daftar WiFi).
 Row {
     id: root
     spacing: 18
+
+    readonly property alias net: net
 
     Txt { mono: true; font.pixelSize: 13; color: Theme.muted; text: "CPU " + Math.round(SysStats.cpu * 100) + "%" }
     Txt { mono: true; font.pixelSize: 13; color: Theme.muted; text: "RAM " + SysStats.memUsed.toFixed(1).replace(".", ",") + "G" }
 
     Row {
+        id: net
         spacing: 6
         Txt { mono: true; font.pixelSize: 17; color: Theme.accent2; text: Net.wired ? Icons.ethernet : Net.wifiNetwork ? Icons.wifi : Icons.wifiOff }
         Txt { text: Net.label; elide: Text.ElideRight; width: Math.min(implicitWidth, 140) }
