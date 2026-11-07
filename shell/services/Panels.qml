@@ -11,6 +11,7 @@ Singleton {
     property bool dashboard: false
     property bool launcher: false
     property bool settings: false
+    property bool keys: false         // daftar pintasan keyboard
     property bool wifiList: false     // dashboard dibuka langsung dengan daftar WiFi terbuka
     property bool btList: false       // ... atau daftar Bluetooth
     property bool audioList: false    // ... atau daftar keluaran suara
@@ -31,6 +32,7 @@ Singleton {
     function toggleDashboard() {
         root.screenName = activeScreen()
         root.launcher = false
+        root.keys = false
         root.settings = false
         root.wifiList = false
         root.btList = false
@@ -41,6 +43,7 @@ Singleton {
     function openWifi() {
         root.screenName = activeScreen()
         root.launcher = false
+        root.keys = false
         root.settings = false
         root.btList = false
         root.audioList = false
@@ -51,8 +54,10 @@ Singleton {
     function openBluetooth() {
         root.screenName = activeScreen()
         root.launcher = false
+        root.keys = false
         root.settings = false
         root.wifiList = false
+        root.audioList = false
         root.dashboard = true
         root.btList = true
     }
@@ -60,6 +65,7 @@ Singleton {
     function openAudio() {
         root.screenName = activeScreen()
         root.launcher = false
+        root.keys = false
         root.settings = false
         root.wifiList = false
         root.btList = false
@@ -74,22 +80,32 @@ Singleton {
         root.wifiList = false
         root.btList = false
         root.audioList = false
+        root.keys = false
         root.launcher = !root.launcher
     }
 
     function closeAll() {
         root.dashboard = false
         root.launcher = false
+        root.keys = false
         root.settings = false
         root.wifiList = false
         root.btList = false
         root.audioList = false
     }
 
+    function toggleKeys() {
+        root.screenName = activeScreen()
+        const was = root.keys
+        closeAll()
+        root.keys = !was
+    }
+
     function toggleSettings() {
         root.screenName = activeScreen()
         root.dashboard = false
         root.launcher = false
+        root.keys = false
         root.wifiList = false
         root.btList = false
         root.audioList = false

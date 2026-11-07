@@ -67,6 +67,13 @@ Item {
                     Layout.fillWidth: true
                     Heading { text: "Sistem"; Layout.fillWidth: true }
                     Txt {
+                        mono: true; font.pixelSize: 18; color: keysMouse.containsMouse ? Theme.accent : Theme.muted
+                        text: Icons.keyboard
+                        Layout.bottomMargin: 6
+                        Layout.rightMargin: 10
+                        MouseArea { id: keysMouse; anchors { fill: parent; margins: -6 } hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Panels.toggleKeys() }
+                    }
+                    Txt {
                         mono: true; font.pixelSize: 18; color: cogMouse.containsMouse ? Theme.accent : Theme.muted
                         text: Icons.cog
                         Layout.bottomMargin: 6

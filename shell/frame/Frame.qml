@@ -11,6 +11,7 @@ import qs.launcher
 import qs.settings
 import qs.notifications
 import qs.osd
+import qs.keys
 
 // Bingkai satu layar:
 //  - bingkai atas (berisi bar) + kiri/kanan/bawah tipis, masing-masing memesan ruang (exclusive zone)
@@ -73,7 +74,7 @@ Scope {
         // OnDemand, bukan Exclusive: di Hyprland fokus Exclusive langsung membatalkan HyprlandFocusGrab
         // di bawah -> launcher tertutup lagi begitu dibuka. Fokus keyboard tetap didapat lewat grab.
         // Dashboard juga butuh keyboard (kolom kata sandi WiFi).
-        WlrLayershell.keyboardFocus: launcher.open || dashboard.open || settings.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: launcher.open || dashboard.open || settings.open || keysPanel.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         exclusionMode: ExclusionMode.Ignore
         anchors { top: true; bottom: true; left: true; right: true }
         color: "transparent"
@@ -82,6 +83,7 @@ Scope {
             Region { item: dashboard }
             Region { item: launcher }
             Region { item: settings }
+            Region { item: keysPanel }
             Region { item: popups }
         }
 
@@ -115,6 +117,14 @@ Scope {
             height: overlay.height - Theme.barHeight - Theme.edge
         }
 
+        KeysPanel {
+            id: keysPanel
+            open: Panels.keys && root.here
+            panelWidth: Math.min(1100, overlay.width - 2 * Theme.edge - 2 * Theme.panelRadius - 40)
+            anchors.horizontalCenter: parent.horizontalCenter
+            y: overlay.height - Theme.edge - height
+        }
+
         Popups {
             id: popups
             visible: root.screen.name === Panels.activeScreen() || Panels.activeScreen() === ""
@@ -131,7 +141,7 @@ Scope {
 
     // Klik di luar panel = tutup
     HyprlandFocusGrab {
-        active: (Panels.dashboard || Panels.launcher || Panels.settings) && root.here
+        active: (Panels.dashboard || Panels.launcher || Panels.settings || Panels.keys) && root.here
         windows: [overlay, top]
         onCleared: Panels.closeAll()
     }

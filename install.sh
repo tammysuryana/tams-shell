@@ -32,7 +32,7 @@ for a in "$@"; do
       for f in "$HYPR/hyprland.lua" "$HYPR/hyprland.conf"; do
         [ -f "$f" ] || continue
         # Super + R dikembalikan ke menu semula, baru baris tams-shell lainnya dihapus
-        sed -i -E -e 's/hl\.dsp\.global\("tams:launcher"\)\)   -- tams-shell \(dulu: menu\)$/hl.dsp.exec_cmd(menu))/' \
+        sed -i -E -e 's/hl\.dsp\.global\("tams:launcher"\)(, \{ description = "tams-shell: launcher" \})?\)   -- tams-shell \(dulu: menu\)$/hl.dsp.exec_cmd(menu))/' \
                   -e 's/global, tams:launcher   # tams-shell \(dulu: exec, \$menu\)$/exec, $menu/' "$f"
         sed -i '/tams-shell/d' "$f"
       done
@@ -119,7 +119,7 @@ for f in "$HYPR/hyprland.lua" "$HYPR/hyprland.conf"; do
   if tanya "Super + R sekarang membuka menu aplikasi lain. Arahkan ke launcher tams-shell?"; then
     cp "$f" "$f.bak-super-r"
     if [[ "$f" == *.lua ]]; then
-      sed -i -E "s/$pat/\1hl.bind(mainMod .. \" + R\", hl.dsp.global(\"tams:launcher\"))   -- tams-shell (dulu: menu)/" "$f"
+      sed -i -E "s/$pat/\1hl.bind(mainMod .. \" + R\", hl.dsp.global(\"tams:launcher\"), { description = \"tams-shell: launcher\" })   -- tams-shell (dulu: menu)/" "$f"
     else
       sed -i -E "s/$pat/\1bind = \$mainMod, R, global, tams:launcher   # tams-shell (dulu: exec, \$menu)/" "$f"
     fi
@@ -137,7 +137,7 @@ fi
 
 echo -e "\n${G}${B}Selesai!${N}"
 echo "  Coba sekarang tanpa logout:   qs -c tams"
-echo "  Launcher: Super + Space (atau Super + R) · Dashboard: Super + A atau klik jam"
+echo "  Launcher: Super + Space (atau Super + R) · Dashboard: Super + A atau klik jam · Pintasan: Super + /"
 echo "  Pengaturan: ~/.config/tams/settings.json"
 echo
 echo -e "${C}Terima kasih sudah memakai tams-shell! 💖${N} Dukung di ${B}https://saweria.co/tamsrich${N}"

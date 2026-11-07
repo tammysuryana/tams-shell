@@ -42,6 +42,9 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
   `>` untuk menjalankan perintah. Bisa dipakai penuh dengan keyboard.
 - **Notifikasi** keluar dari sisi kanan bingkai (server notifikasi bawaan, tidak perlu dunst/mako).
 - **Indikator volume & kecerahan** muncul di sisi kanan saat diubah.
+- **Daftar pintasan** (`Super + /`) keluar dari bingkai bawah: semua kombinasi tombol yang aktif di
+  Hyprland beserta fungsinya, dibaca langsung dari `hyprctl binds` (pintasan buatan sendiri ikut tampil;
+  beri `description` di bind-mu supaya keterangannya pas).
 - Banyak monitor: tiap layar punya bingkai sendiri, panel muncul di layar yang aktif.
 - Teks bahasa Indonesia, nama hari/bulan ikut bahasa sistem.
 
@@ -82,9 +85,10 @@ qs -c tams
 
 | Tombol | Fungsi |
 |---|---|
-| `Super + Space` | Buka/tutup launcher |
+| `Super + Space` (atau `Super + R`) | Buka/tutup launcher |
 | `Super + A` | Buka/tutup dashboard |
 | `Super + I` / `Super + Esc` | Buka/tutup pengaturan |
+| `Super + /` | **Daftar pintasan**: semua kombinasi tombol Hyprland + fungsinya (juga ikon keyboard di dashboard) |
 | Klik jam | Dashboard |
 | Klik logo | Launcher |
 | `Esc` / klik di luar panel | Tutup panel |
@@ -97,6 +101,7 @@ qs -c tams ipc call tams dashboard   # buka/tutup dashboard
 qs -c tams ipc call tams wifi        # buka dashboard dengan daftar WiFi
 qs -c tams ipc call tams bluetooth   # buka dashboard dengan daftar Bluetooth
 qs -c tams ipc call tams audio       # buka dashboard dengan daftar keluaran suara
+qs -c tams ipc call tams keys        # buka/tutup daftar pintasan
 qs -c tams ipc call tams settings    # buka/tutup pengaturan
 qs -c tams ipc call tams wallpaper   # pilih file wallpaper
 qs -c tams ipc call tams lock        # kunci layar (hyprlock)
@@ -117,12 +122,15 @@ Buka panel **Pengaturan** dengan `Super + I`, `Super + Esc`, atau ikon roda di d
 - **Jendela**: jarak antar jendela, jarak ke bingkai, tebal garis tepi, lengkung sudut,
   transparansi jendela tidak aktif, blur, animasi.
 - **Bingkai**: tebal bingkai samping, jumlah workspace.
+- **Layar**: letak monitor tambahan (HDMI/DP) terhadap layar laptop: klik kotak **kiri / kanan /
+  atas / bawah**, atau pilih **Cermin** / **Matikan**. Resolusi dan skala tiap layar juga bisa diganti;
+  kalau layar jadi tidak tampil, setelan kembali sendiri dalam 15 detik kecuali dipilih **Pertahankan**.
 - **Aplikasi**: terminal yang dipakai.
 - **Wallpaper**: klik gambar dari `~/Pictures` / `~/Pictures/Wallpapers`, atau **Pilih file lain…**
   untuk mengambil dari folder mana saja.
 
-Pengaturan jendela diterapkan ke Hyprland yang sedang jalan (lewat `hyprctl`) dan diterapkan lagi
-setiap kali config Hyprland dimuat ulang. File config Hyprland kamu tidak diubah.
+Pengaturan jendela dan layar diterapkan ke Hyprland yang sedang jalan (lewat `hyprctl`) dan diterapkan lagi
+setiap kali config Hyprland dimuat ulang atau monitor dicolok. File config Hyprland kamu tidak diubah.
 
 Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit langsung:
 
@@ -141,12 +149,15 @@ Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit lang
   "rounding": 12,
   "blur": true,
   "animations": true,
-  "inactiveOpacity": 1
+  "inactiveOpacity": 1,
+  "displays": { "HDMI-A-1": { "position": "left", "mode": "preferred", "scale": "auto" } }
 }
 ```
 
 - `wallpaper`: kosongkan (`""`) untuk wallpaper bawaan.
 - `workspaces`: jumlah nomor workspace yang selalu tampil.
+- `displays`: per nama layar (lihat `hyprctl monitors`). `position`: `left` / `right` / `up` / `down` /
+  `mirror` / `off`; `mode`: `preferred` atau mis. `1920x1080@60.00`; `scale`: `auto` atau angka (1, 1.25, …).
 - `mode`: `"dark"` atau `"light"`. `colorSource`: `"manual"` (pakai `accent`) atau `"wallpaper"`.
 
 Warna lain dan font ada di `~/.config/quickshell/tams/config/Theme.qml`.

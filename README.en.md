@@ -29,9 +29,13 @@ Built with [Quickshell](https://quickshell.org), written from scratch, MIT licen
   networks, join a new one with its password, disconnect or forget. Needs NetworkManager (wpa_supplicant or iwd backend).
 - **Bluetooth without a terminal**: click "Bluetooth" in the dashboard to discover devices, pair & connect
   headsets/speakers/mice/phones, disconnect or forget. Devices that need a typed PIN still go through `bluetoothctl`.
+- **Audio output picker**: click "Keluaran suara" in the dashboard to switch between speakers, headphones, HDMI
+  or a Bluetooth speaker; playing audio moves along. Headphones that are a card profile (e.g. Chromebooks) work too.
 - **Launcher** from the left edge: search apps, `=` to calculate, `>` to run a command. Fully keyboard driven.
 - **Notifications** slide out of the right edge (built-in notification server, no dunst/mako needed).
 - **Volume & brightness OSD** on the right edge.
+- **Shortcut list** (`Super + /`) slides out of the bottom edge: every active Hyprland keybind and what it does,
+  read live from `hyprctl binds` (your own binds show up too; give them a `description` for a nice label).
 - Multi-monitor: one frame per screen, panels open on the focused screen.
 
 ## Install
@@ -52,10 +56,10 @@ Disable any other bar/shell you were running.
 
 ## Keys & IPC
 
-`Super + Space` launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Esc` or click outside to close.
+`Super + Space` (or `Super + R`) launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Super + /` keyboard shortcut list · `Esc` or click outside to close.
 
 ```bash
-qs -c tams ipc call tams launcher | dashboard | wifi | bluetooth | settings | wallpaper | lock | close
+qs -c tams ipc call tams launcher | dashboard | wifi | bluetooth | audio | keys | settings | wallpaper | lock | close
 ```
 
 Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global, tams:settings`.
@@ -67,12 +71,14 @@ dark / light theme, colors picked by hand or **generated from the wallpaper** (f
 GTK/Chromium apps follow dark/light),
 window gaps (inner/outer), border width, corner rounding, inactive window opacity, blur, animations,
 accent color, side frame width, workspace count, terminal and wallpaper (click one from `~/Pictures`, or **Pilih file lain…** to pick any file).
-Window settings are applied to the running Hyprland via `hyprctl` (and re-applied after a config reload);
+**Displays**: place an external monitor (HDMI/DP) left / right / above / below the laptop screen by clicking a box,
+or mirror / turn it off; change each screen's resolution and scale (reverts by itself after 15 seconds unless you keep it).
+Window and display settings are applied to the running Hyprland via `hyprctl` (and re-applied after a config reload or monitor hotplug);
 your Hyprland config files are not modified.
 
 Everything is stored in `~/.config/tams/settings.json` (live-reloaded, can be edited by hand):
 `wallpaper`, `terminal`, `workspaces`, `mode` (`dark`/`light`), `colorSource` (`manual`/`wallpaper`), `accent`, `edge`, `gapsIn`, `gapsOut`, `border`, `rounding`,
-`blur`, `animations`, `inactiveOpacity`. Other colors and fonts: `config/Theme.qml`.
+`blur`, `animations`, `inactiveOpacity`, `displays`. Other colors and fonts: `config/Theme.qml`.
 
 ## License
 
