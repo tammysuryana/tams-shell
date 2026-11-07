@@ -4,18 +4,19 @@ import qs.config
 import qs.services
 import qs.widgets
 
-// Satu layar di Pengaturan. Layar tambahan: klik kotak di kiri/kanan/atas/bawah layar utama untuk
-// memindahkannya, atau pilih Cermin / Mati. Semua layar: resolusi dan skala (dengan hitung mundur
-// untuk kembali sendiri, kalau layar jadi tidak tampil).
+// Satu layar di Pengaturan.
+// Layar tambahan: peta dengan ukuran sebenarnya, seret kotaknya ke mana saja di sekitar layar utama
+// (menempel ke tepi terdekat), atau pakai tombol Kiri/Atas/Bawah/Kanan, Cermin, Hanya <layar ini>, Matikan.
+// Semua layar: resolusi dan skala (dengan hitung mundur untuk kembali sendiri).
 Rectangle {
     id: root
 
     required property var m
-    readonly property var main: Displays.main
-    readonly property bool isMain: main !== null && main.name === m.name
+    readonly property var primary: Displays.primary
+    readonly property bool isPrimary: primary !== null && primary.name === m.name
     readonly property string place: Displays.placeOf(m)
     readonly property var cfg: Displays.conf(m.name)
-    readonly property bool waiting: Displays.revert !== null && Displays.revert.name === m.name
+    readonly property bool waiting: Displays.revert !== null && Displays.revert.prev[m.name] !== undefined
     property bool modesOpen: false
 
     function short(x) { return x.internal ? "Laptop" : x.name.split("-")[0] }
@@ -39,45 +40,127 @@ Rectangle {
                 Txt { Layout.fillWidth: true; elide: Text.ElideRight; text: root.m.label }
                 Txt {
                     Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 11; color: Theme.muted
-                    text: root.m.name + (root.isMain ? " · layar utama" : "")
+                    text: root.m.name + (root.isPrimary ? " · layar utama" : "")
                         + (root.m.disabled ? " · mati" : " · " + root.m.width + " × " + root.m.height + (root.m.scale !== 1 ? " · " + Math.round(root.m.scale * 100) + "%" : ""))
                 }
             }
         }
 
-        // Peta posisi terhadap layar utama
-        Item {
-            id: map
-            visible: !root.isMain && root.main !== null
+        // Layar utama yang sedang dimatikan ("hanya HDMI")
+        Txt {
+            visible: root.isPrimary && root.m.disabled
             Layout.fillWidth: true
-            implicitHeight: 3 * sh + 2 * gap
-            readonly property int sw: 86
-            readonly property int sh: 48
-            readonly property int gap: 6
-            readonly property real cx: width / 2
-
-            Rectangle {
-                x: map.cx - map.sw / 2; y: map.sh + map.gap
-                width: map.sw; height: map.sh; radius: 8
-                color: Theme.surface2
-                Txt {
-                    anchors.centerIn: parent
-                    font.pixelSize: 12
-                    text: root.main ? root.short(root.main) + (root.place === "mirror" ? " = " + root.short(root.m) : "") : ""
-                }
-            }
-            Slot { pos: "left"; label: "Kiri"; x: map.cx - map.sw / 2 - map.gap - map.sw; y: map.sh + map.gap }
-            Slot { pos: "right"; label: "Kanan"; x: map.cx + map.sw / 2 + map.gap; y: map.sh + map.gap }
-            Slot { pos: "up"; label: "Atas"; x: map.cx - map.sw / 2; y: 0 }
-            Slot { pos: "down"; label: "Bawah"; x: map.cx - map.sw / 2; y: 2 * (map.sh + map.gap) }
+            wrapMode: Text.Wrap
+            font.pixelSize: 12
+            color: Theme.muted
+            text: "Layar ini mati, tampilan hanya di layar lain."
+        }
+        Btn {
+            visible: root.isPrimary && root.m.disabled
+            Layout.fillWidth: true
+            bg: Theme.frame
+            label: "Nyalakan lagi"
+            onClicked: Displays.set(root.m.name, { position: "" })
         }
 
-        RowLayout {
-            visible: map.visible
+        // Peta posisi: ukuran & letak sebenarnya, kotak layar ini bisa diseret
+        Item {
+            id: map
+            readonly property bool usable: !root.isPrimary && root.primary !== null && !root.primary.disabled
+                && !root.m.disabled && !root.m.mirrored
+            visible: usable
             Layout.fillWidth: true
-            spacing: 6
-            Btn { Layout.fillWidth: true; bg: Theme.frame; label: "Cermin"; active: root.place === "mirror"; onClicked: Displays.set(root.m.name, { position: "mirror" }) }
-            Btn { Layout.fillWidth: true; bg: Theme.frame; label: "Matikan"; active: root.place === "off"; onClicked: Displays.set(root.m.name, { position: "off" }) }
+            implicitHeight: 170
+
+            readonly property real pw: usable ? root.primary.width / root.primary.scale : 1
+            readonly property real ph: usable ? root.primary.height / root.primary.scale : 1
+            readonly property real ow: usable ? root.m.width / root.m.scale : 1
+            readonly property real oh: usable ? root.m.height / root.m.scale : 1
+            // Skala peta: layar utama di tengah, ruang selebar layar ini di tiap sisi
+            readonly property real k: Math.min(width / (pw + 2 * ow), height / (ph + 2 * oh)) * 0.96
+            readonly property real ox: (width - pw * k) / 2
+            readonly property real oy: (height - ph * k) / 2
+
+            Rectangle {
+                x: map.ox; y: map.oy
+                width: map.pw * map.k; height: map.ph * map.k
+                radius: 6
+                color: Theme.surface2
+                Txt { anchors.centerIn: parent; font.pixelSize: 12; text: root.primary ? root.short(root.primary) : "" }
+            }
+
+            Rectangle {
+                id: box
+                readonly property real homeX: map.usable ? map.ox + (root.m.x - root.primary.x) * map.k : 0
+                readonly property real homeY: map.usable ? map.oy + (root.m.y - root.primary.y) * map.k : 0
+                x: homeX; y: homeY
+                width: map.ow * map.k; height: map.oh * map.k
+                radius: 6
+                color: Theme.accent
+                opacity: dragArea.drag.active ? 0.8 : 1
+                Txt { anchors.centerIn: parent; font.pixelSize: 12; color: Theme.frame; text: root.short(root.m) }
+                MouseArea {
+                    id: dragArea
+                    anchors.fill: parent
+                    cursorShape: dragArea.drag.active ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+                    drag.target: box
+                    drag.minimumX: 0; drag.maximumX: map.width - box.width
+                    drag.minimumY: 0; drag.maximumY: map.height - box.height
+                    onReleased: {
+                        if (!dragArea.drag.active && Math.abs(box.x - box.homeX) < 2 && Math.abs(box.y - box.homeY) < 2) return
+                        // 10 piksel di peta = jarak tempel untuk sejajar atas/tengah/bawah
+                        Displays.place(root.m.name, (box.x - map.ox) / map.k, (box.y - map.oy) / map.k, 10 / map.k)
+                        box.x = Qt.binding(() => box.homeX)
+                        box.y = Qt.binding(() => box.homeY)
+                    }
+                }
+            }
+        }
+        Txt {
+            visible: map.usable
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: 11
+            color: Theme.muted
+            text: "Seret kotak " + root.short(root.m) + " untuk mengatur posisi"
+        }
+
+        Txt {
+            visible: !root.isPrimary && (root.place === "only" || root.place === "mirror" || root.place === "off")
+            Layout.fillWidth: true
+            wrapMode: Text.Wrap
+            font.pixelSize: 12
+            color: Theme.muted
+            text: root.place === "only" ? "Hanya layar ini yang menyala. Pilih posisi di bawah untuk memakai dua layar lagi."
+                : root.place === "mirror" ? "Menampilkan isi yang sama dengan layar " + (root.primary ? root.short(root.primary) : "utama") + "."
+                : "Layar ini dimatikan."
+        }
+
+        // Tombol cepat
+        RowLayout {
+            visible: !root.isPrimary && root.primary !== null
+            Layout.fillWidth: true
+            spacing: 4
+            Repeater {
+                model: [{ v: "left", t: "Kiri" }, { v: "up", t: "Atas" }, { v: "down", t: "Bawah" }, { v: "right", t: "Kanan" }]
+                Btn {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    pad: 4
+                    bg: Theme.frame
+                    label: modelData.t
+                    active: root.cfg.position === modelData.v && root.place !== "only"
+                    onClicked: Displays.set(root.m.name, { position: modelData.v })
+                }
+            }
+        }
+        RowLayout {
+            visible: !root.isPrimary && root.primary !== null
+            Layout.fillWidth: true
+            spacing: 4
+            Btn { Layout.fillWidth: true; pad: 4; bg: Theme.frame; label: "Cermin"; active: root.place === "mirror"; onClicked: Displays.set(root.m.name, { position: "mirror" }) }
+            Btn { Layout.fillWidth: true; pad: 4; bg: Theme.frame; label: "Hanya " + root.short(root.m); active: root.place === "only"; onClicked: Displays.only(root.m.name) }
+            Btn { Layout.fillWidth: true; pad: 4; bg: Theme.frame; label: "Matikan"; active: root.place === "off"; onClicked: Displays.set(root.m.name, { position: "off" }) }
         }
 
         // Resolusi
@@ -135,7 +218,7 @@ Rectangle {
             }
         }
 
-        // Konfirmasi setelah ganti resolusi/skala
+        // Konfirmasi setelah ganti resolusi/skala/"hanya layar ini"
         Rectangle {
             visible: root.waiting
             Layout.fillWidth: true
@@ -155,30 +238,6 @@ Rectangle {
                 SmallBtn { label: "Pertahankan"; onClicked: Displays.keep() }
                 SmallBtn { label: "Kembalikan"; onClicked: Displays.undo() }
             }
-        }
-    }
-
-    component Slot: Rectangle {
-        id: slot
-        property string pos
-        property string label
-        readonly property bool on: root.place === pos
-        width: map.sw; height: map.sh; radius: 8
-        color: on ? Theme.accent : slotMouse.containsMouse ? Theme.surface2 : "transparent"
-        border.width: on ? 0 : 1
-        border.color: Theme.line
-        Txt {
-            anchors.centerIn: parent
-            font.pixelSize: 12
-            text: slot.on ? root.short(root.m) : slot.label
-            color: slot.on ? Theme.frame : Theme.muted
-        }
-        MouseArea {
-            id: slotMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: Displays.set(root.m.name, { position: slot.pos })
         }
     }
 }

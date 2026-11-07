@@ -21,7 +21,7 @@ Scope {
 
     required property ShellScreen screen
     readonly property var monitor: Hyprland.monitorFor(screen)
-    readonly property bool here: Panels.screenName === "" || Panels.screenName === screen.name
+    readonly property bool here: screen !== null && (Panels.screenName === "" || Panels.screenName === screen.name)
 
     // Wallpaper
     PanelWindow {
@@ -36,7 +36,7 @@ Scope {
             source: Settings.wallpaper
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
-            sourceSize: Qt.size(root.screen.width, root.screen.height)
+            sourceSize: root.screen ? Qt.size(root.screen.width, root.screen.height) : Qt.size(0, 0)
         }
     }
 
@@ -127,7 +127,7 @@ Scope {
 
         Popups {
             id: popups
-            visible: root.screen.name === Panels.activeScreen() || Panels.activeScreen() === ""
+            visible: root.screen !== null && (root.screen.name === Panels.activeScreen() || Panels.activeScreen() === "")
             x: overlay.width - Theme.edge - width
             y: Theme.barHeight
         }
@@ -135,7 +135,7 @@ Scope {
         Osd {
             x: overlay.width - Theme.edge - width
             anchors.verticalCenter: parent.verticalCenter
-            visible: root.screen.name === Panels.activeScreen() || Panels.activeScreen() === ""
+            visible: root.screen !== null && (root.screen.name === Panels.activeScreen() || Panels.activeScreen() === "")
         }
     }
 

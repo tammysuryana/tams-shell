@@ -71,8 +71,10 @@ dark / light theme, colors picked by hand or **generated from the wallpaper** (f
 GTK/Chromium apps follow dark/light),
 window gaps (inner/outer), border width, corner rounding, inactive window opacity, blur, animations,
 accent color, side frame width, workspace count, terminal and wallpaper (click one from `~/Pictures`, or **Pilih file lain…** to pick any file).
-**Displays**: place an external monitor (HDMI/DP) left / right / above / below the laptop screen by clicking a box,
-or mirror / turn it off; change each screen's resolution and scale (reverts by itself after 15 seconds unless you keep it).
+**Displays**: a to-scale map where you drag the external monitor (HDMI/DP) anywhere around the laptop screen
+(snaps to an edge and to top/center/bottom alignment), or use Left / Up / Down / Right; Mirror, "HDMI only"
+(laptop screen off) or turn it off; resolution and scale per screen. Resolution/scale changes and "HDMI only"
+revert by themselves after 15 seconds unless you keep them, and the laptop screen comes back if HDMI is unplugged.
 Window and display settings are applied to the running Hyprland via `hyprctl` (and re-applied after a config reload or monitor hotplug);
 your Hyprland config files are not modified.
 

@@ -122,9 +122,12 @@ Buka panel **Pengaturan** dengan `Super + I`, `Super + Esc`, atau ikon roda di d
 - **Jendela**: jarak antar jendela, jarak ke bingkai, tebal garis tepi, lengkung sudut,
   transparansi jendela tidak aktif, blur, animasi.
 - **Bingkai**: tebal bingkai samping, jumlah workspace.
-- **Layar**: letak monitor tambahan (HDMI/DP) terhadap layar laptop: klik kotak **kiri / kanan /
-  atas / bawah**, atau pilih **Cermin** / **Matikan**. Resolusi dan skala tiap layar juga bisa diganti;
-  kalau layar jadi tidak tampil, setelan kembali sendiri dalam 15 detik kecuali dipilih **Pertahankan**.
+- **Layar**: peta layar dengan ukuran sebenarnya; **seret** kotak monitor tambahan (HDMI/DP) ke mana saja
+  di sekitar layar laptop (menempel ke tepi, bisa sejajar atas/tengah/bawah), atau pakai tombol
+  **Kiri / Atas / Bawah / Kanan**. Pilihan lain: **Cermin**, **Hanya HDMI** (layar laptop dimatikan),
+  **Matikan**. Resolusi dan skala tiap layar juga bisa diganti. Setelah ganti resolusi/skala atau
+  "Hanya HDMI", setelan kembali sendiri dalam 15 detik kecuali dipilih **Pertahankan**; kalau HDMI
+  dicabut waktu "Hanya HDMI", layar laptop menyala lagi sendiri.
 - **Aplikasi**: terminal yang dipakai.
 - **Wallpaper**: klik gambar dari `~/Pictures` / `~/Pictures/Wallpapers`, atau **Pilih file lain…**
   untuk mengambil dari folder mana saja.
@@ -157,7 +160,8 @@ Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit lang
 - `wallpaper`: kosongkan (`""`) untuk wallpaper bawaan.
 - `workspaces`: jumlah nomor workspace yang selalu tampil.
 - `displays`: per nama layar (lihat `hyprctl monitors`). `position`: `left` / `right` / `up` / `down` /
-  `mirror` / `off`; `mode`: `preferred` atau mis. `1920x1080@60.00`; `scale`: `auto` atau angka (1, 1.25, …).
+  `custom` (pakai `at`: `"XxY"` relatif ke layar laptop) / `mirror` / `off` (untuk layar laptop = "hanya HDMI");
+  `mode`: `preferred` atau mis. `1920x1080@60.00`; `scale`: `auto` atau angka (1, 1.25, …).
 - `mode`: `"dark"` atau `"light"`. `colorSource`: `"manual"` (pakai `accent`) atau `"wallpaper"`.
 
 Warna lain dan font ada di `~/.config/quickshell/tams/config/Theme.qml`.
