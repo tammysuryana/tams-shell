@@ -14,9 +14,13 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
 |---|---|
 | ![Dashboard](docs/dashboard.jpg) | ![Launcher](docs/launcher.jpg) |
 
-| Pengaturan (`Super + I`) |
+| Pengaturan (`Super + I`) | Pengaturan → Layar (seret posisi HDMI) |
+|---|---|
+| ![Pengaturan](docs/settings.jpg) | ![Layar](docs/layar.jpg) |
+
+| Daftar pintasan (`Super + /`) |
 |---|
-| ![Pengaturan](docs/settings.jpg) |
+| ![Daftar pintasan](docs/keys.jpg) |
 
 <sub>Wallpaper di screenshot: [Konachan #409824](https://konachan.com/post/show/409824), bukan bagian dari repo ini.</sub>
 

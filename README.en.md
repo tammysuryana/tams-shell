@@ -14,9 +14,13 @@ Built with [Quickshell](https://quickshell.org), written from scratch, MIT licen
 |---|---|
 | ![Dashboard](docs/dashboard.jpg) | ![Launcher](docs/launcher.jpg) |
 
-| Settings (`Super + I`) |
+| Settings (`Super + I`) | Settings → Displays (drag the HDMI screen) |
+|---|---|
+| ![Settings](docs/settings.jpg) | ![Displays](docs/layar.jpg) |
+
+| Shortcut list (`Super + /`) |
 |---|
-| ![Settings](docs/settings.jpg) |
+| ![Shortcut list](docs/keys.jpg) |
 
 <sub>Wallpaper in the screenshots: [Konachan #409824](https://konachan.com/post/show/409824), not part of this repo.</sub>
 
