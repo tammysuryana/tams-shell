@@ -56,7 +56,8 @@ if [ $PKGS -eq 1 ]; then
   sudo pacman -S --needed --noconfirm \
     quickshell qt6-svg qt6-imageformats hyprland hyprsunset hyprlock \
     ttf-jetbrains-mono-nerd networkmanager brightnessctl bluez bluez-utils \
-    pipewire pipewire-pulse wireplumber libnotify
+    pipewire pipewire-pulse wireplumber libnotify \
+    grim slurp wl-clipboard xdg-user-dirs xdg-utils
   ok "paket terpasang"
 fi
 
@@ -138,6 +139,7 @@ fi
 echo -e "\n${G}${B}Selesai!${N}"
 echo "  Coba sekarang tanpa logout:   qs -c tams"
 echo "  Launcher: Super + Space (atau Super + R) · Dashboard: Super + A atau klik jam · Pintasan: Super + /"
+echo "  Screenshot: Super + Shift + S (area) · PrtSc (layar) — tersimpan di ~/Pictures/Screenshots"
 echo "  Pengaturan: ~/.config/tams/settings.json"
 echo
 echo -e "${C}Terima kasih sudah memakai tams-shell! 💖${N} Dukung di ${B}https://saweria.co/tamsrich${N}"

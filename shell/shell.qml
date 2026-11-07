@@ -19,7 +19,7 @@ ShellRoot {
         }
     }
 
-    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / bluetooth / audio / keys / settings / wallpaper / lock / close)
+    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / bluetooth / audio / keys / screenshot area|screen|all / settings / wallpaper / lock / close)
     IpcHandler {
         target: "tams"
         function launcher(): void { Panels.toggleLauncher() }
@@ -28,6 +28,7 @@ ShellRoot {
         function bluetooth(): void { Panels.openBluetooth() }
         function audio(): void { Panels.openAudio() }
         function keys(): void { Panels.toggleKeys() }
+        function screenshot(mode: string): void { Screenshot.take(mode) }
         function lock(): void { Panels.closeAll(); Power.lock() }
         function settings(): void { Panels.toggleSettings() }
         function wallpaper(): void { Panels.openWallpaperPicker() }
@@ -38,6 +39,9 @@ ShellRoot {
     GlobalShortcut { appid: "tams"; name: "launcher"; description: "Buka/tutup launcher"; onPressed: Panels.toggleLauncher() }
     GlobalShortcut { appid: "tams"; name: "dashboard"; description: "Buka/tutup dashboard"; onPressed: Panels.toggleDashboard() }
     GlobalShortcut { appid: "tams"; name: "keys"; description: "Buka/tutup daftar pintasan"; onPressed: Panels.toggleKeys() }
+    GlobalShortcut { appid: "tams"; name: "screenshotArea"; description: "Screenshot area / jendela"; onPressed: Screenshot.take("area") }
+    GlobalShortcut { appid: "tams"; name: "screenshotScreen"; description: "Screenshot layar aktif"; onPressed: Screenshot.take("screen") }
+    GlobalShortcut { appid: "tams"; name: "screenshotAll"; description: "Screenshot semua layar"; onPressed: Screenshot.take("all") }
     GlobalShortcut { appid: "tams"; name: "settings"; description: "Buka/tutup pengaturan"; onPressed: Panels.toggleSettings() }
 
     // Terapkan tampilan jendela (jarak, garis tepi, sudut, warna tepi, ...) ke Hyprland

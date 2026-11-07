@@ -11,6 +11,9 @@ hl.bind("SUPER + A", hl.dsp.global("tams:dashboard"), { description = "tams-shel
 hl.bind("SUPER + I", hl.dsp.global("tams:settings"), { description = "tams-shell: pengaturan" })
 hl.bind("SUPER + Escape", hl.dsp.global("tams:settings"), { description = "tams-shell: pengaturan" })
 hl.bind("SUPER + slash", hl.dsp.global("tams:keys"), { description = "tams-shell: keys" })
+hl.bind("SUPER + SHIFT + S", hl.dsp.global("tams:screenshotArea"), { description = "tams-shell: screenshotArea" })
+hl.bind("Print", hl.dsp.global("tams:screenshotScreen"), { description = "tams-shell: screenshotScreen" })
+hl.bind("SHIFT + Print", hl.dsp.global("tams:screenshotAll"), { description = "tams-shell: screenshotAll" })
 
 -- Jendela milik tams-shell (mis. pemilih wallpaper) melayang di tengah, tidak ikut ditata
 hl.window_rule({

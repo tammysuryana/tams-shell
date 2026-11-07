@@ -122,6 +122,13 @@ Item {
                     model: Notifs.list.slice(0, 3)
                     NotifCard { required property var modelData; notif: modelData; Layout.fillWidth: true }
                 }
+                Heading { text: "Screenshot"; Layout.topMargin: 8 }
+                RowLayout {
+                    spacing: 8
+                    Btn { label: "Area"; icon: Icons.crop; onClicked: Screenshot.take("area") }
+                    Btn { label: "Layar"; icon: Icons.camera; onClicked: Screenshot.take("screen") }
+                    Btn { label: "Semua"; icon: Icons.screens; onClicked: Screenshot.take("all") }
+                }
                 Heading { text: "Daya"; Layout.topMargin: 8 }
                 GridLayout {
                     columns: 2

@@ -37,7 +37,8 @@ Singleton {
     // Fungsi tams-shell (Hyprland global tams:<nama>)
     readonly property var tamsText: ({
         launcher: "Launcher: cari aplikasi", dashboard: "Dashboard", settings: "Pengaturan", pengaturan: "Pengaturan",
-        keys: "Daftar pintasan ini"
+        keys: "Daftar pintasan ini",
+        screenshotArea: "Screenshot area / jendela", screenshotScreen: "Screenshot layar ini", screenshotAll: "Screenshot semua layar"
     })
 
     // Bind bawaan config Hyprland yang perintahnya tidak terbaca (config Lua hanya memberi nomor)
