@@ -18,17 +18,22 @@ ShellRoot {
         }
     }
 
-    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / lock / close)
+    // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / settings / lock / close)
     IpcHandler {
         target: "tams"
         function launcher(): void { Panels.toggleLauncher() }
         function dashboard(): void { Panels.toggleDashboard() }
         function wifi(): void { Panels.openWifi() }
         function lock(): void { Panels.closeAll(); Power.lock() }
+        function settings(): void { Panels.toggleSettings() }
         function close(): void { Panels.closeAll() }
     }
 
     // Shortcut global Hyprland:  bind = SUPER, Space, global, tams:launcher
     GlobalShortcut { appid: "tams"; name: "launcher"; description: "Buka/tutup launcher"; onPressed: Panels.toggleLauncher() }
     GlobalShortcut { appid: "tams"; name: "dashboard"; description: "Buka/tutup dashboard"; onPressed: Panels.toggleDashboard() }
+    GlobalShortcut { appid: "tams"; name: "settings"; description: "Buka/tutup pengaturan"; onPressed: Panels.toggleSettings() }
+
+    // Terapkan tampilan jendela (jarak, garis tepi, sudut, ...) dari settings.json ke Hyprland
+    Component.onCompleted: HyprLook.look
 }

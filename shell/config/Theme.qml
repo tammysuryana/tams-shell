@@ -2,8 +2,9 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import qs.services
 
-// Warna, ukuran, dan font tams-shell. Ubah di sini untuk mengganti tampilan.
+// Warna, ukuran, dan font tams-shell. Aksen & tebal bingkai diatur dari panel Pengaturan (Super + I).
 Singleton {
     // Bingkai & panel
     readonly property color frame: "#0f1117"
@@ -14,7 +15,7 @@ Singleton {
     // Teks & aksen
     readonly property color text: "#d5d8e6"
     readonly property color muted: "#7b8096"
-    readonly property color accent: "#e0af68"
+    readonly property color accent: Settings.accent
     readonly property color accent2: "#7dcfff"
     readonly property color good: "#9ece6a"
     readonly property color warn: "#ff9e64"
@@ -22,7 +23,7 @@ Singleton {
 
     // Ukuran bingkai: tebal atas (berisi bar), tebal sisi, lengkung sudut dalam
     readonly property int barHeight: 44
-    readonly property int edge: 10
+    readonly property int edge: Settings.edge
     readonly property int radius: 22
     readonly property int panelRadius: 30
 

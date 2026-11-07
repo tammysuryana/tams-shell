@@ -5,15 +5,41 @@ import Quickshell
 import Quickshell.Io
 
 // Pengaturan pengguna di ~/.config/tams/settings.json (dibuat otomatis kalau belum ada).
+// Diubah lewat panel Pengaturan (Super + I) atau langsung di file; perubahan langsung dipakai.
 Singleton {
     id: root
 
     readonly property string defaultWallpaper: Qt.resolvedUrl("../assets/wallpaper.jpg")
     readonly property string wallpaper: adapter.wallpaper !== "" ? "file://" + adapter.wallpaper : defaultWallpaper
+    readonly property string wallpaperPath: adapter.wallpaper
     readonly property string terminal: adapter.terminal
     readonly property int workspaces: adapter.workspaces
 
+    // Tampilan shell
+    readonly property color accent: adapter.accent
+    readonly property int edge: adapter.edge
+
+    // Tampilan jendela Hyprland (diterapkan oleh HyprLook)
+    readonly property int gapsIn: adapter.gapsIn
+    readonly property int gapsOut: adapter.gapsOut
+    readonly property int border: adapter.border
+    readonly property int rounding: adapter.rounding
+    readonly property bool blur: adapter.blur
+    readonly property bool animations: adapter.animations
+    readonly property real inactiveOpacity: adapter.inactiveOpacity
+
+    readonly property var defaults: ({
+        accent: "#e0af68", edge: 10, workspaces: 5, terminal: "kitty",
+        gapsIn: 4, gapsOut: 6, border: 2, rounding: 12,
+        blur: true, animations: true, inactiveOpacity: 1.0
+    })
+
     function setWallpaper(path) { adapter.wallpaper = path }
+    function set(key, value) { if (adapter[key] !== value) adapter[key] = value }
+    function resetLook() {
+        for (const k in root.defaults)
+            if (k !== "terminal") adapter[k] = root.defaults[k]
+    }
 
     FileView {
         path: Quickshell.env("HOME") + "/.config/tams/settings.json"
@@ -27,6 +53,15 @@ Singleton {
             property string wallpaper: ""
             property string terminal: "kitty"
             property int workspaces: 5
+            property string accent: "#e0af68"
+            property int edge: 10
+            property int gapsIn: 4
+            property int gapsOut: 6
+            property int border: 2
+            property int rounding: 12
+            property bool blur: true
+            property bool animations: true
+            property real inactiveOpacity: 1.0
         }
     }
 }

@@ -8,3 +8,4 @@ end)
 
 hl.bind("SUPER + Space", hl.dsp.global("tams:launcher"), { description = "tams-shell: launcher" })
 hl.bind("SUPER + A", hl.dsp.global("tams:dashboard"), { description = "tams-shell: dashboard" })
+hl.bind("SUPER + I", hl.dsp.global("tams:settings"), { description = "tams-shell: pengaturan" })

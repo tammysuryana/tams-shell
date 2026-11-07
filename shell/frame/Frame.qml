@@ -8,6 +8,7 @@ import qs.widgets
 import qs.bar
 import qs.dashboard
 import qs.launcher
+import qs.settings
 import qs.notifications
 import qs.osd
 
@@ -72,7 +73,7 @@ Scope {
         // OnDemand, bukan Exclusive: di Hyprland fokus Exclusive langsung membatalkan HyprlandFocusGrab
         // di bawah -> launcher tertutup lagi begitu dibuka. Fokus keyboard tetap didapat lewat grab.
         // Dashboard juga butuh keyboard (kolom kata sandi WiFi).
-        WlrLayershell.keyboardFocus: launcher.open || dashboard.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        WlrLayershell.keyboardFocus: launcher.open || dashboard.open || settings.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         exclusionMode: ExclusionMode.Ignore
         anchors { top: true; bottom: true; left: true; right: true }
         color: "transparent"
@@ -80,6 +81,7 @@ Scope {
         mask: Region {
             Region { item: dashboard }
             Region { item: launcher }
+            Region { item: settings }
             Region { item: popups }
         }
 
@@ -104,6 +106,14 @@ Scope {
             height: overlay.height - Theme.barHeight - Theme.edge
         }
 
+        SettingsPanel {
+            id: settings
+            open: Panels.settings && root.here
+            x: overlay.width - Theme.edge - width
+            y: Theme.barHeight
+            height: overlay.height - Theme.barHeight - Theme.edge
+        }
+
         Popups {
             id: popups
             visible: root.screen.name === Panels.activeScreen() || Panels.activeScreen() === ""
@@ -120,7 +130,7 @@ Scope {
 
     // Klik di luar panel = tutup
     HyprlandFocusGrab {
-        active: (Panels.dashboard || Panels.launcher) && root.here
+        active: (Panels.dashboard || Panels.launcher || Panels.settings) && root.here
         windows: [overlay, top]
         onCleared: Panels.closeAll()
     }

@@ -1,0 +1,206 @@
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
+import qs.config
+import qs.services
+import qs.widgets
+
+// Panel Pengaturan yang keluar dari sisi kanan bingkai (Super + I, atau ikon roda di dashboard).
+// Semua perubahan langsung dipakai dan disimpan ke ~/.config/tams/settings.json.
+Item {
+    id: root
+
+    property bool open: false
+    readonly property int panelWidth: 440
+    readonly property int r: Theme.panelRadius
+
+    width: open ? panelWidth + r : 0
+    visible: width > 0
+    clip: true
+    Behavior on width { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
+
+    onOpenChanged: if (open) { term.text = Settings.terminal; walls.running = true }
+
+    readonly property var accents: ["#e0af68", "#ff9e64", "#f7768e", "#bb9af7", "#7aa2f7", "#7dcfff", "#73daca", "#9ece6a", "#c0caf5"]
+
+    // Telinga cekung kiri-atas & kiri-bawah
+    Corner { corner: "tr"; x: 0; y: 0; size: root.r }
+    Corner { corner: "br"; x: 0; y: root.height - root.r; size: root.r }
+
+    Rectangle {
+        id: body
+        x: root.r
+        width: root.panelWidth
+        height: parent.height
+        color: Theme.frame
+
+        Keys.onEscapePressed: Panels.closeAll()
+
+        RowLayout {
+            id: header
+            anchors { left: parent.left; right: parent.right; top: parent.top; margins: 28; bottomMargin: 0 }
+            Txt { text: "Pengaturan"; font.pixelSize: 22; font.weight: Font.Bold; Layout.fillWidth: true }
+            Btn { icon: Icons.close; pad: 8; onClicked: Panels.closeAll() }
+        }
+
+        Flickable {
+            anchors { left: parent.left; right: parent.right; top: header.bottom; bottom: parent.bottom; margins: 28; topMargin: 12 }
+            contentHeight: col.implicitHeight
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+
+            ColumnLayout {
+                id: col
+                width: parent.width
+                spacing: 4
+
+                Heading { text: "Jendela" }
+                Range { label: "Jarak antar jendela"; key: "gapsIn"; min: 0; max: 20 }
+                Range { label: "Jarak ke bingkai"; key: "gapsOut"; min: 0; max: 40 }
+                Range { label: "Tebal garis tepi"; key: "border"; min: 0; max: 6 }
+                Range { label: "Lengkung sudut"; key: "rounding"; min: 0; max: 24 }
+                Range { label: "Jendela tidak aktif"; key: "inactiveOpacity"; min: 0.5; max: 1; step: 0.05; percent: true }
+                Switch { Layout.fillWidth: true; label: "Blur"; checked: Settings.blur; onToggled: Settings.set("blur", !Settings.blur) }
+                Switch { Layout.fillWidth: true; label: "Animasi"; checked: Settings.animations; onToggled: Settings.set("animations", !Settings.animations) }
+
+                Heading { text: "Bingkai"; Layout.topMargin: 18 }
+                Txt { text: "Warna aksen"; color: Theme.muted; font.pixelSize: 13 }
+                Flow {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 6
+                    Layout.bottomMargin: 6
+                    spacing: 8
+                    Repeater {
+                        model: root.accents
+                        Rectangle {
+                            required property string modelData
+                            readonly property bool on: Qt.colorEqual(Settings.accent, modelData)
+                            width: 30; height: 30; radius: 15
+                            color: modelData
+                            border.width: on ? 3 : 0
+                            border.color: Theme.text
+                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Settings.set("accent", parent.modelData) }
+                        }
+                    }
+                }
+                Range { label: "Tebal bingkai samping"; key: "edge"; min: 0; max: 24 }
+                Range { label: "Jumlah workspace"; key: "workspaces"; min: 1; max: 10 }
+
+                Heading { text: "Aplikasi"; Layout.topMargin: 18 }
+                Txt { text: "Terminal (dipakai launcher & WiFi enterprise)"; color: Theme.muted; font.pixelSize: 13 }
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 6
+                    implicitHeight: 38
+                    radius: 12
+                    color: Theme.surface
+                    border.color: term.activeFocus ? Theme.accent : Theme.line
+                    TextInput {
+                        id: term
+                        anchors { fill: parent; leftMargin: 12; rightMargin: 12 }
+                        verticalAlignment: TextInput.AlignVCenter
+                        color: Theme.text
+                        font.family: Theme.mono
+                        font.pixelSize: 13
+                        selectionColor: Theme.accent
+                        clip: true
+                        onEditingFinished: if (text.trim() !== "") Settings.set("terminal", text.trim())
+                        Keys.onEscapePressed: Panels.closeAll()
+                    }
+                }
+
+                Heading { text: "Wallpaper"; Layout.topMargin: 18 }
+                Txt {
+                    Layout.fillWidth: true
+                    text: "Gambar dari ~/Pictures dan ~/Pictures/Wallpapers"
+                    color: Theme.muted; font.pixelSize: 13; wrapMode: Text.Wrap
+                }
+                GridLayout {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 6
+                    columns: 3
+                    columnSpacing: 8
+                    rowSpacing: 8
+                    Repeater {
+                        model: [""].concat(walls.files)
+                        Rectangle {
+                            required property string modelData
+                            readonly property bool on: Settings.wallpaperPath === modelData
+                            Layout.fillWidth: true
+                            implicitHeight: 70
+                            radius: 10
+                            color: Theme.surface2
+                            clip: true
+                            Image {
+                                anchors { fill: parent; margins: 3 }
+                                source: parent.modelData === "" ? Settings.defaultWallpaper : "file://" + parent.modelData
+                                sourceSize { width: 200; height: 120 }
+                                fillMode: Image.PreserveAspectCrop
+                                asynchronous: true
+                                cache: true
+                            }
+                            Rectangle {
+                                anchors.fill: parent
+                                radius: parent.radius
+                                color: "transparent"
+                                border.width: parent.on ? 3 : 0
+                                border.color: Theme.accent
+                            }
+                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Settings.setWallpaper(parent.modelData) }
+                        }
+                    }
+                }
+
+                Btn {
+                    Layout.topMargin: 22
+                    Layout.bottomMargin: 8
+                    label: "Kembalikan tampilan bawaan"
+                    onClicked: Settings.resetLook()
+                }
+            }
+        }
+    }
+
+    // Daftar gambar wallpaper (dibaca ulang tiap panel dibuka)
+    Process {
+        id: walls
+        property var files: []
+        command: ["sh", "-c", "find \"$HOME/Pictures\" -maxdepth 2 -type f \\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \\) 2>/dev/null | sort | head -n 30"]
+        stdout: StdioCollector { onStreamFinished: walls.files = text.split("\n").filter(l => l !== "") }
+    }
+
+    component Heading: Txt {
+        font.pixelSize: 11
+        font.letterSpacing: 2
+        font.capitalization: Font.AllUppercase
+        color: Theme.muted
+        Layout.bottomMargin: 4
+    }
+
+    // Satu baris pengaturan angka: label di atas, slider di bawah
+    component Range: ColumnLayout {
+        id: rg
+        property string label
+        property string key
+        property real min: 0
+        property real max: 1
+        property real step: 1
+        property bool percent: false
+        readonly property real cur: Settings[key]
+        Layout.fillWidth: true
+        spacing: 0
+        Txt { text: rg.label; font.pixelSize: 13 }
+        Slider {
+            Layout.fillWidth: true
+            fill: Theme.accent
+            value: (rg.cur - rg.min) / (rg.max - rg.min)
+            display: rg.percent ? Math.round(rg.cur * 100) + "%" : rg.cur
+            onMoved: v => {
+                const raw = rg.min + v * (rg.max - rg.min)
+                const val = Math.round(raw / rg.step) * rg.step
+                Settings.set(rg.key, rg.step < 1 ? Number(val.toFixed(2)) : Math.round(val))
+            }
+        }
+    }
+}

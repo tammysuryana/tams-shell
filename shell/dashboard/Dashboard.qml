@@ -64,7 +64,16 @@ Item {
                 Layout.maximumWidth: body.colW
                 Layout.alignment: Qt.AlignTop
                 spacing: 0
-                Heading { text: "Sistem" }
+                RowLayout {
+                    Layout.fillWidth: true
+                    Heading { text: "Sistem"; Layout.fillWidth: true }
+                    Txt {
+                        mono: true; font.pixelSize: 18; color: cogMouse.containsMouse ? Theme.accent : Theme.muted
+                        text: Icons.cog
+                        Layout.bottomMargin: 6
+                        MouseArea { id: cogMouse; anchors { fill: parent; margins: -6 } hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Panels.toggleSettings() }
+                    }
+                }
                 WifiPanel { Layout.fillWidth: true; active: root.open }
                 Switch {
                     Layout.fillWidth: true

@@ -72,6 +72,7 @@ qs -c tams
 |---|---|
 | `Super + Space` | Buka/tutup launcher |
 | `Super + A` | Buka/tutup dashboard |
+| `Super + I` | Buka/tutup pengaturan |
 | Klik jam | Dashboard |
 | Klik logo | Launcher |
 | `Esc` / klik di luar panel | Tutup panel |
@@ -82,31 +83,52 @@ Dari terminal / skrip:
 qs -c tams ipc call tams launcher    # buka/tutup launcher
 qs -c tams ipc call tams dashboard   # buka/tutup dashboard
 qs -c tams ipc call tams wifi        # buka dashboard dengan daftar WiFi
+qs -c tams ipc call tams settings    # buka/tutup pengaturan
 qs -c tams ipc call tams lock        # kunci layar (hyprlock)
 qs -c tams ipc call tams close       # tutup semua panel
 ```
 
-Shortcut Hyprland memakai `global, tams:launcher` dan `global, tams:dashboard`, jadi bebas dipasang
+Shortcut Hyprland memakai `global, tams:launcher`, `global, tams:dashboard`, dan `global, tams:settings`, jadi bebas dipasang
 ke tombol lain.
 
 ---
 
 ## Pengaturan
 
-File `~/.config/tams/settings.json` (dibuat otomatis saat pertama jalan, berubah langsung tanpa restart):
+Buka panel **Pengaturan** dengan `Super + I` atau ikon roda di dashboard. Semua perubahan langsung terlihat:
+
+- **Jendela**: jarak antar jendela, jarak ke bingkai, tebal garis tepi, lengkung sudut,
+  transparansi jendela tidak aktif, blur, animasi.
+- **Bingkai**: warna aksen, tebal bingkai samping, jumlah workspace.
+- **Aplikasi**: terminal yang dipakai.
+- **Wallpaper**: pilih dari `~/Pictures` / `~/Pictures/Wallpapers`.
+
+Pengaturan jendela diterapkan ke Hyprland yang sedang jalan (lewat `hyprctl`) dan diterapkan lagi
+setiap kali config Hyprland dimuat ulang. File config Hyprland kamu tidak diubah.
+
+Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit langsung:
 
 ```json
 {
   "wallpaper": "/home/kamu/Gambar/wallpaper.jpg",
   "terminal": "kitty",
-  "workspaces": 5
+  "workspaces": 5,
+  "accent": "#e0af68",
+  "edge": 10,
+  "gapsIn": 4,
+  "gapsOut": 6,
+  "border": 2,
+  "rounding": 12,
+  "blur": true,
+  "animations": true,
+  "inactiveOpacity": 1
 }
 ```
 
 - `wallpaper`: kosongkan (`""`) untuk wallpaper bawaan.
 - `workspaces`: jumlah nomor workspace yang selalu tampil.
 
-Warna, tebal bingkai, dan font ada di `~/.config/quickshell/tams/config/Theme.qml`.
+Warna lain dan font ada di `~/.config/quickshell/tams/config/Theme.qml`.
 
 ---
 

@@ -8,13 +8,14 @@ Item {
     property string icon: ""
     property real value: 0
     property color fill: Theme.accent2
+    property string display: Math.round(value * 100)   // angka di kanan
     signal moved(real v)
 
     implicitHeight: 30
     implicitWidth: 240
 
-    Txt { id: ic; anchors.verticalCenter: parent.verticalCenter; text: root.icon; mono: true; font.pixelSize: 18; color: Theme.muted; width: 26 }
-    Txt { id: num; anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter; mono: true; font.pixelSize: 12; color: Theme.muted; text: Math.round(root.value * 100); width: 30; horizontalAlignment: Text.AlignRight }
+    Txt { id: ic; anchors.verticalCenter: parent.verticalCenter; text: root.icon; mono: true; font.pixelSize: 18; color: Theme.muted; width: root.icon !== "" ? 26 : 0 }
+    Txt { id: num; anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter; mono: true; font.pixelSize: 12; color: Theme.muted; text: root.display; width: 30; horizontalAlignment: Text.AlignRight }
 
     Item {
         id: area

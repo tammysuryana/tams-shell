@@ -10,6 +10,7 @@ Singleton {
 
     property bool dashboard: false
     property bool launcher: false
+    property bool settings: false
     property bool wifiList: false     // dashboard dibuka langsung dengan daftar WiFi terbuka
     property string screenName: ""
 
@@ -20,6 +21,7 @@ Singleton {
     function toggleDashboard() {
         root.screenName = activeScreen()
         root.launcher = false
+        root.settings = false
         root.wifiList = false
         root.dashboard = !root.dashboard
     }
@@ -27,6 +29,7 @@ Singleton {
     function openWifi() {
         root.screenName = activeScreen()
         root.launcher = false
+        root.settings = false
         root.dashboard = true
         root.wifiList = true
     }
@@ -34,6 +37,7 @@ Singleton {
     function toggleLauncher() {
         root.screenName = activeScreen()
         root.dashboard = false
+        root.settings = false
         root.wifiList = false
         root.launcher = !root.launcher
     }
@@ -41,6 +45,15 @@ Singleton {
     function closeAll() {
         root.dashboard = false
         root.launcher = false
+        root.settings = false
         root.wifiList = false
+    }
+
+    function toggleSettings() {
+        root.screenName = activeScreen()
+        root.dashboard = false
+        root.launcher = false
+        root.wifiList = false
+        root.settings = !root.settings
     }
 }

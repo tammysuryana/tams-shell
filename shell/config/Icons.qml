@@ -39,6 +39,7 @@ Singleton {
     readonly property string memory: g(0xF035B)
     readonly property string chevron: g(0xF0142)
     readonly property string chevronDown: g(0xF0140)
+    readonly property string cog: g(0xF0493)
     readonly property string eye: g(0xF0208)
     readonly property string eyeOff: g(0xF0209)
 
