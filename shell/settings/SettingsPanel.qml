@@ -22,7 +22,7 @@ Item {
     clip: true
     Behavior on width { NumberAnimation { duration: Theme.anim; easing.type: Easing.OutCubic } }
 
-    onOpenChanged: if (open) { term.text = Settings.terminal; walls.running = true; Displays.refresh() }
+    onOpenChanged: if (open) { term.text = Settings.terminal; shotDir.text = Settings.screenshotDir; walls.running = true; Displays.refresh() }
 
     readonly property var accents: ["#e0af68", "#ff9e64", "#f7768e", "#bb9af7", "#7aa2f7", "#7dcfff", "#73daca", "#9ece6a", "#c0caf5"]
 
@@ -130,6 +130,13 @@ Item {
                 Heading { text: "Bingkai"; Layout.topMargin: 18 }
                 Range { label: "Tebal bingkai samping"; key: "edge"; min: 0; max: 24 }
                 Range { label: "Jumlah workspace"; key: "workspaces"; min: 1; max: 10 }
+                Txt { text: "Gaya nomor workspace"; font.pixelSize: 13; Layout.topMargin: 6 }
+                Segmented {
+                    Layout.topMargin: 4
+                    options: [{ v: "number", t: "1 2 3" }, { v: "dot", t: "• • •" }, { v: "roman", t: "I II III" }, { v: "kanji", t: "一 二 三" }]
+                    current: Settings.workspaceStyle
+                    onPicked: v => Settings.set("workspaceStyle", v)
+                }
 
                 Heading { text: "Layar"; Layout.topMargin: 18 }
                 Repeater {
@@ -157,6 +164,36 @@ Item {
                         clip: true
                         onEditingFinished: if (text.trim() !== "") Settings.set("terminal", text.trim())
                         Keys.onEscapePressed: Panels.closeAll()
+                    }
+                }
+                Txt { text: "Folder screenshot"; color: Theme.muted; font.pixelSize: 13; Layout.topMargin: 10 }
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 6
+                    implicitHeight: 38
+                    radius: 12
+                    color: Theme.surface
+                    border.color: shotDir.activeFocus ? Theme.accent : Theme.line
+                    TextInput {
+                        id: shotDir
+                        anchors { fill: parent; leftMargin: 12; rightMargin: 12 }
+                        verticalAlignment: TextInput.AlignVCenter
+                        color: Theme.text
+                        font.family: Theme.mono
+                        font.pixelSize: 13
+                        selectionColor: Theme.accent
+                        clip: true
+                        // kosong = folder bawaan
+                        onEditingFinished: Settings.setScreenshotDir(text.trim().replace(/^~(?=\/|$)/, Quickshell.env("HOME")))
+                        Keys.onEscapePressed: Panels.closeAll()
+                        Txt {
+                            visible: shotDir.text === ""
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: Screenshot.dir
+                            color: Theme.muted
+                            font.family: Theme.mono
+                            font.pixelSize: 13
+                        }
                     }
                 }
 

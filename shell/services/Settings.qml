@@ -15,7 +15,9 @@ Singleton {
     // Path file biasa (bawaan pun), untuk yang tidak bisa membaca alamat qs: seperti ColorQuantizer
     readonly property string wallpaperFile: adapter.wallpaper !== "" ? adapter.wallpaper : Quickshell.shellPath("assets/wallpaper.jpg")
     readonly property string terminal: adapter.terminal
+    readonly property string screenshotDir: adapter.screenshotDir   // kosong = ~/Pictures/Screenshots
     readonly property int workspaces: adapter.workspaces
+    readonly property string workspaceStyle: adapter.workspaceStyle   // "number" | "dot" | "roman" | "kanji"
 
     // Tampilan shell
     readonly property string mode: adapter.mode                 // "dark" | "light"
@@ -36,13 +38,14 @@ Singleton {
     readonly property var displays: adapter.displays
 
     readonly property var defaults: ({
-        mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, workspaces: 5, terminal: "kitty",
+        mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, workspaces: 5, workspaceStyle: "number", terminal: "kitty",
         gapsIn: 2, gapsOut: 2, border: 2, rounding: 12,
         blur: true, animations: true, inactiveOpacity: 1.0
     })
 
     function setWallpaper(path) { adapter.wallpaper = path }
     function set(key, value) { if (adapter[key] !== value) adapter[key] = value }
+    function setScreenshotDir(path) { adapter.screenshotDir = path }
     function setDisplay(name, patch) {
         const all = Object.assign({}, adapter.displays)
         all[name] = Object.assign({}, all[name], patch)
@@ -64,7 +67,9 @@ Singleton {
             id: adapter
             property string wallpaper: ""
             property string terminal: "kitty"
+            property string screenshotDir: ""
             property int workspaces: 5
+            property string workspaceStyle: "number"
             property string mode: "dark"
             property string colorSource: "manual"
             property string accent: "#e0af68"

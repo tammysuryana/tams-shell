@@ -46,6 +46,11 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
   `>` untuk menjalankan perintah. Bisa dipakai penuh dengan keyboard.
 - **Notifikasi** keluar dari sisi kanan bingkai (server notifikasi bawaan, tidak perlu dunst/mako).
 - **Indikator volume & kecerahan** muncul di sisi kanan saat diubah.
+- **Screenshot**: `Super + Shift + S` pilih area (seret kotak, atau klik satu jendela), `PrtSc` layar ini,
+  `Shift + PrtSc` semua layar, atau tombol Area / Layar / Semua di dashboard. Tersimpan di
+  **`~/Pictures/Screenshots/Screenshot_<tanggal>_<jam>.png`** dan langsung disalin ke clipboard (tinggal
+  `Ctrl + V`); notifikasinya berisi pratinjau dan tombol **Buka** / **Buka folder**. Folder bisa diganti di
+  Pengaturan → Aplikasi.
 - **Daftar pintasan** (`Super + /`) keluar dari bingkai bawah: semua kombinasi tombol yang aktif di
   Hyprland beserta fungsinya, dibaca langsung dari `hyprctl binds` (pintasan buatan sendiri ikut tampil;
   beri `description` di bind-mu supaya keterangannya pas).
@@ -92,6 +97,8 @@ qs -c tams
 | `Super + Space` (atau `Super + R`) | Buka/tutup launcher |
 | `Super + A` | Buka/tutup dashboard |
 | `Super + I` / `Super + Esc` | Buka/tutup pengaturan |
+| `Super + Shift + S` | Screenshot area / jendela |
+| `PrtSc` / `Shift + PrtSc` | Screenshot layar ini / semua layar |
 | `Super + /` | **Daftar pintasan**: semua kombinasi tombol Hyprland + fungsinya (juga ikon keyboard di dashboard) |
 | Klik jam | Dashboard |
 | Klik logo | Launcher |
@@ -106,6 +113,7 @@ qs -c tams ipc call tams wifi        # buka dashboard dengan daftar WiFi
 qs -c tams ipc call tams bluetooth   # buka dashboard dengan daftar Bluetooth
 qs -c tams ipc call tams audio       # buka dashboard dengan daftar keluaran suara
 qs -c tams ipc call tams keys        # buka/tutup daftar pintasan
+qs -c tams ipc call tams screenshot area   # screenshot (area / screen / all)
 qs -c tams ipc call tams settings    # buka/tutup pengaturan
 qs -c tams ipc call tams wallpaper   # pilih file wallpaper
 qs -c tams ipc call tams lock        # kunci layar (hyprlock)
@@ -125,7 +133,8 @@ Buka panel **Pengaturan** dengan `Super + I`, `Super + Esc`, atau ikon roda di d
   (bingkai, panel, garis tepi jendela ikut berubah; aplikasi GTK/Chromium ikut gelap/terang).
 - **Jendela**: jarak antar jendela, jarak ke bingkai, tebal garis tepi, lengkung sudut,
   transparansi jendela tidak aktif, blur, animasi.
-- **Bingkai**: tebal bingkai samping, jumlah workspace.
+- **Bingkai**: tebal bingkai samping, jumlah workspace, gaya nomor workspace di pojok kiri atas:
+  angka `1 2 3`, titik `• • •`, romawi `I II III`, atau kanji `一 二 三` (butuh font CJK, mis. `noto-fonts-cjk`).
 - **Layar**: peta layar dengan ukuran sebenarnya; **seret** kotak monitor tambahan (HDMI/DP) ke mana saja
   di sekitar layar laptop (menempel ke tepi, bisa sejajar atas/tengah/bawah), atau pakai tombol
   **Kiri / Atas / Bawah / Kanan**. Pilihan lain: **Cermin**, **Hanya HDMI** (layar laptop dimatikan),
@@ -163,6 +172,8 @@ Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit lang
 
 - `wallpaper`: kosongkan (`""`) untuk wallpaper bawaan.
 - `workspaces`: jumlah nomor workspace yang selalu tampil.
+- `workspaceStyle`: `number` / `dot` / `roman` / `kanji`.
+- `screenshotDir`: folder screenshot; kosongkan (`""`) untuk `~/Pictures/Screenshots`.
 - `displays`: per nama layar (lihat `hyprctl monitors`). `position`: `left` / `right` / `up` / `down` /
   `custom` (pakai `at`: `"XxY"` relatif ke layar laptop) / `mirror` / `off` (untuk layar laptop = "hanya HDMI");
   `mode`: `preferred` atau mis. `1920x1080@60.00`; `scale`: `auto` atau angka (1, 1.25, …).

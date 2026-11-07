@@ -38,6 +38,10 @@ Built with [Quickshell](https://quickshell.org), written from scratch, MIT licen
 - **Launcher** from the left edge: search apps, `=` to calculate, `>` to run a command. Fully keyboard driven.
 - **Notifications** slide out of the right edge (built-in notification server, no dunst/mako needed).
 - **Volume & brightness OSD** on the right edge.
+- **Screenshots**: `Super + Shift + S` select an area (drag, or click a window), `PrtSc` this screen,
+  `Shift + PrtSc` all screens, or the Area / Layar / Semua buttons in the dashboard. Saved to
+  **`~/Pictures/Screenshots/Screenshot_<date>_<time>.png`** and copied to the clipboard; the notification shows a
+  preview with **Buka** (open) / **Buka folder** buttons. The folder can be changed in Settings → Aplikasi.
 - **Shortcut list** (`Super + /`) slides out of the bottom edge: every active Hyprland keybind and what it does,
   read live from `hyprctl binds` (your own binds show up too; give them a `description` for a nice label).
 - Multi-monitor: one frame per screen, panels open on the focused screen.
@@ -60,10 +64,10 @@ Disable any other bar/shell you were running.
 
 ## Keys & IPC
 
-`Super + Space` (or `Super + R`) launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Super + /` keyboard shortcut list · `Esc` or click outside to close.
+`Super + Space` (or `Super + R`) launcher · `Super + A` dashboard · `Super + I` / `Super + Esc` settings · `Super + /` keyboard shortcut list · `Super + Shift + S` / `PrtSc` / `Shift + PrtSc` screenshot · `Esc` or click outside to close.
 
 ```bash
-qs -c tams ipc call tams launcher | dashboard | wifi | bluetooth | audio | keys | settings | wallpaper | lock | close
+qs -c tams ipc call tams launcher | dashboard | wifi | bluetooth | audio | keys | screenshot <area|screen|all> | settings | wallpaper | lock | close
 ```
 
 Hyprland binds use `global, tams:launcher`, `global, tams:dashboard` and `global, tams:settings`.
@@ -74,7 +78,7 @@ Open the **Settings** panel with `Super + I`, `Super + Esc` or the cog in the da
 dark / light theme, colors picked by hand or **generated from the wallpaper** (frame, panels and window borders follow;
 GTK/Chromium apps follow dark/light),
 window gaps (inner/outer), border width, corner rounding, inactive window opacity, blur, animations,
-accent color, side frame width, workspace count, terminal and wallpaper (click one from `~/Pictures`, or **Pilih file lain…** to pick any file).
+accent color, side frame width, workspace count, workspace indicator style (numbers, dots, Roman numerals or kanji), terminal and wallpaper (click one from `~/Pictures`, or **Pilih file lain…** to pick any file).
 **Displays**: a to-scale map where you drag the external monitor (HDMI/DP) anywhere around the laptop screen
 (snaps to an edge and to top/center/bottom alignment), or use Left / Up / Down / Right; Mirror, "HDMI only"
 (laptop screen off) or turn it off; resolution and scale per screen. Resolution/scale changes and "HDMI only"
@@ -84,7 +88,7 @@ your Hyprland config files are not modified.
 
 Everything is stored in `~/.config/tams/settings.json` (live-reloaded, can be edited by hand):
 `wallpaper`, `terminal`, `workspaces`, `mode` (`dark`/`light`), `colorSource` (`manual`/`wallpaper`), `accent`, `edge`, `gapsIn`, `gapsOut`, `border`, `rounding`,
-`blur`, `animations`, `inactiveOpacity`, `displays`. Other colors and fonts: `config/Theme.qml`.
+`blur`, `animations`, `inactiveOpacity`, `displays`, `screenshotDir`, `workspaceStyle`. Other colors and fonts: `config/Theme.qml`.
 
 ## License
 
