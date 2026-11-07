@@ -52,7 +52,7 @@ if [ $PKGS -eq 1 ]; then
   sudo pacman -S --needed --noconfirm \
     quickshell qt6-svg qt6-imageformats hyprland hyprsunset hyprlock \
     ttf-jetbrains-mono-nerd networkmanager brightnessctl bluez bluez-utils \
-    pipewire wireplumber libnotify
+    pipewire pipewire-pulse wireplumber libnotify
   ok "paket terpasang"
 fi
 

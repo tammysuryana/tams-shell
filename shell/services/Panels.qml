@@ -13,6 +13,7 @@ Singleton {
     property bool settings: false
     property bool wifiList: false     // dashboard dibuka langsung dengan daftar WiFi terbuka
     property bool btList: false       // ... atau daftar Bluetooth
+    property bool audioList: false    // ... atau daftar keluaran suara
     property string screenName: ""
 
     signal pickWallpaper()   // buka pemilih file wallpaper (di layar yang aktif)
@@ -33,6 +34,7 @@ Singleton {
         root.settings = false
         root.wifiList = false
         root.btList = false
+        root.audioList = false
         root.dashboard = !root.dashboard
     }
 
@@ -41,6 +43,7 @@ Singleton {
         root.launcher = false
         root.settings = false
         root.btList = false
+        root.audioList = false
         root.dashboard = true
         root.wifiList = true
     }
@@ -54,12 +57,23 @@ Singleton {
         root.btList = true
     }
 
+    function openAudio() {
+        root.screenName = activeScreen()
+        root.launcher = false
+        root.settings = false
+        root.wifiList = false
+        root.btList = false
+        root.dashboard = true
+        root.audioList = true
+    }
+
     function toggleLauncher() {
         root.screenName = activeScreen()
         root.dashboard = false
         root.settings = false
         root.wifiList = false
         root.btList = false
+        root.audioList = false
         root.launcher = !root.launcher
     }
 
@@ -69,6 +83,7 @@ Singleton {
         root.settings = false
         root.wifiList = false
         root.btList = false
+        root.audioList = false
     }
 
     function toggleSettings() {
@@ -77,6 +92,7 @@ Singleton {
         root.launcher = false
         root.wifiList = false
         root.btList = false
+        root.audioList = false
         root.settings = !root.settings
     }
 }

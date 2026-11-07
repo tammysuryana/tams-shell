@@ -29,6 +29,9 @@ Dibuat dengan [Quickshell](https://quickshell.org), ditulis dari nol, lisensi MI
 - **Bluetooth tanpa terminal**: klik tulisan "Bluetooth" di dashboard untuk mencari perangkat,
   pasangkan (pairing) & sambungkan headset/speaker/mouse/HP, putuskan, atau lupakan.
   Perangkat yang minta PIN diketik (sebagian keyboard) masih lewat `bluetoothctl`.
+- **Pilih keluaran suara**: klik "Keluaran suara" di dashboard untuk pindah antara speaker,
+  headphone, HDMI, atau speaker Bluetooth. Suara yang sedang main ikut pindah. Headphone yang
+  berupa profil kartu (mis. di Chromebook) juga bisa dipilih.
 - **Launcher** keluar dari sisi kiri: cari aplikasi, `=` untuk menghitung (`=1920*1080`),
   `>` untuk menjalankan perintah. Bisa dipakai penuh dengan keyboard.
 - **Notifikasi** keluar dari sisi kanan bingkai (server notifikasi bawaan, tidak perlu dunst/mako).
@@ -87,6 +90,7 @@ qs -c tams ipc call tams launcher    # buka/tutup launcher
 qs -c tams ipc call tams dashboard   # buka/tutup dashboard
 qs -c tams ipc call tams wifi        # buka dashboard dengan daftar WiFi
 qs -c tams ipc call tams bluetooth   # buka dashboard dengan daftar Bluetooth
+qs -c tams ipc call tams audio       # buka dashboard dengan daftar keluaran suara
 qs -c tams ipc call tams settings    # buka/tutup pengaturan
 qs -c tams ipc call tams wallpaper   # pilih file wallpaper
 qs -c tams ipc call tams lock        # kunci layar (hyprlock)

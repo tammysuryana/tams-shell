@@ -77,14 +77,20 @@ Item {
                     id: wifiPanel
                     Layout.fillWidth: true
                     active: root.open
-                    onExpandedChanged: if (expanded) btPanel.expanded = false
+                    onExpandedChanged: if (expanded) { btPanel.expanded = false; audioPanel.expanded = false }
                 }
                 BluetoothPanel {
                     id: btPanel
                     Layout.fillWidth: true
                     active: root.open
                     // satu daftar terbuka saja supaya dashboard tidak terlalu tinggi
-                    onExpandedChanged: if (expanded) wifiPanel.expanded = false
+                    onExpandedChanged: if (expanded) { wifiPanel.expanded = false; audioPanel.expanded = false }
+                }
+                AudioPanel {
+                    id: audioPanel
+                    Layout.fillWidth: true
+                    active: root.open
+                    onExpandedChanged: if (expanded) { wifiPanel.expanded = false; btPanel.expanded = false }
                 }
                 Switch { Layout.fillWidth: true; label: "Jangan ganggu"; checked: Notifs.dnd; onToggled: Notifs.dnd = !Notifs.dnd }
                 Switch { Layout.fillWidth: true; label: "Lampu malam"; checked: NightLight.on; onToggled: NightLight.toggle() }

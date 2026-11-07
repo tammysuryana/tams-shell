@@ -24,7 +24,7 @@ Row {
 
     Row {
         spacing: 6
-        Txt { mono: true; font.pixelSize: 17; color: Theme.accent2; text: Audio.muted ? Icons.volumeMute : Icons.volume }
+        Txt { mono: true; font.pixelSize: 17; color: Theme.accent2; text: Audio.muted ? Icons.volumeMute : Audio.current?.kind === "headphones" ? Icons.headphones : Audio.current?.kind === "hdmi" ? Icons.monitor : Icons.volume }
         Txt { mono: true; font.pixelSize: 13; text: Audio.muted ? "bisu" : Math.round(Audio.volume * 100) }
     }
 

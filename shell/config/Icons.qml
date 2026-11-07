@@ -14,6 +14,7 @@ Singleton {
     readonly property string bluetoothOff: g(0xF00B2)
     readonly property string headphones: g(0xF02CB)
     readonly property string speaker: g(0xF04C3)
+    readonly property string monitor: g(0xF0379)
     readonly property string mouse: g(0xF037D)
     readonly property string keyboard: g(0xF030C)
     readonly property string gamepad: g(0xF0297)
