@@ -30,8 +30,12 @@ Singleton {
     readonly property var modBits: [[64, "Super"], [4, "Ctrl"], [8, "Alt"], [1, "Shift"]]
 
     readonly property var keyNames: ({
+        SUPER_L: "Super", SUPER_R: "Super", Page_Up: "PgUp", Page_Down: "PgDn", Prior: "PgUp", Next: "PgDn",
+        Semicolon: ";", Apostrophe: "'", BracketLeft: "[", BracketRight: "]", Minus: "−", Equal: "=", Period: ".",
+        Backslash: "\\", Delete: "Del", "mouse:274": "Klik tengah", "mouse:275": "Tombol samping",
+        "mouse:276": "Tombol samping 2",
         Space: "Space", space: "Space", Escape: "Esc", Return: "Enter", Tab: "Tab", slash: "/", Print: "PrtSc",
-        left: "←", right: "→", up: "↑", down: "↓",
+        left: "←", right: "→", up: "↑", down: "↓", Left: "←", Right: "→", Up: "↑", Down: "↓",
         mouse_down: "Roda ↓", mouse_up: "Roda ↑", "mouse:272": "Klik kiri", "mouse:273": "Klik kanan",
         XF86AudioRaiseVolume: "Vol +", XF86AudioLowerVolume: "Vol −", XF86AudioMute: "Bisu", XF86AudioMicMute: "Mic",
         XF86MonBrightnessUp: "Terang +", XF86MonBrightnessDown: "Terang −",
@@ -49,7 +53,9 @@ Singleton {
     // Fungsi tams-shell (Hyprland global tams:<nama>)
     readonly property var tamsText: ({
         launcher: "Launcher: cari aplikasi", dashboard: "Dashboard", settings: "Pengaturan", pengaturan: "Pengaturan",
-        keys: "Daftar pintasan ini",
+        keys: "Daftar pintasan ini", launcherTap: "Launcher: cari aplikasi", lock: "Kunci layar",
+        wallpaper: "Pilih wallpaper", theme: "Ganti gelap / terang", caffeine: "Tetap menyala",
+        restart: "Mulai ulang shell",
         screenshotArea: "Screenshot area / jendela", screenshotScreen: "Screenshot layar ini", screenshotAll: "Screenshot semua layar"
     })
 
@@ -66,11 +72,15 @@ Singleton {
         const ws = digit ? (key === "0" ? "10" : key) : ""
 
         if (tams) return ["tams", root.tamsText[tams[1]] || tams[1]]
+        // Keterangan "Bagian: teks" masuk ke bagian itu
+        const part = /^([^:]{2,20}):\s*(.+)$/.exec(desc)
+        if (part) return [part[1], part[2]]
         if (desc) return ["Lainnya", desc]
         if (disp === "global") {
             const name = readable ? arg.replace(/^tams:/, "") : ""
             return ["tams", root.tamsText[name] || (name ? "Global: " + name : "Fungsi tams-shell")]
         }
+        if (key === "XF86AudioMute" && mods.indexOf("Alt") >= 0) return ["Tombol media", root.mediaText.XF86AudioMicMute]
         if (root.mediaText[key]) return ["Tombol media", root.mediaText[key]]
         switch (disp) {
         case "exec": case "exec_cmd":
@@ -102,15 +112,24 @@ Singleton {
     }
 
     function parse(json) {
-        const order = ["tams", "Jendela", "Workspace", "Aplikasi", "Tombol media", "Lainnya"]
+        const order = ["tams", "Jendela", "Workspace", "Aplikasi", "Utilitas", "Media", "Tombol media", "Sesi", "Layar", "Lainnya"]
         const titles = { tams: "tams-shell" }
         const groups = {}
-        for (const b of JSON.parse(json)) {
-            if (b.submap || b.catch_all) continue
-            const mods = root.modBits.filter(m => b.modmask & m[0]).map(m => m[1])
+        const binds = JSON.parse(json)
+        // Config pengguna sudah memberi keterangan di banyak bind (gaya end4): bind tanpa keterangan
+        // dianggap pembantu tersembunyi, kecuali tombol media. Kalau tidak, semua bind ditampilkan.
+        const strict = binds.filter(b => b.has_description && !/^tams-shell:/.test(b.description)).length >= 10
+        for (const b of binds) {
+            if (strict && !b.has_description && !b.key.startsWith("XF86")) continue
+            // non_consuming = bind pembantu yang tak terlihat (mis. pembatal Super ditekan sendiri)
+            if (b.submap || b.catch_all || b.non_consuming) continue
+            let mods = root.modBits.filter(m => b.modmask & m[0]).map(m => m[1])
             const disp = (/^HL\.Dispatcher\((.+)\)$/.exec(b.dispatcher) || [null, b.dispatcher])[1]
             const key = b.key
-            const [sec, text] = describe(b, disp, key, mods.join("+"))
+            // Super ditekan sendiri: tampil sebagai "Super" saja
+            if (/^SUPER_[LR]$/.test(key)) mods = []
+            let [sec, text] = describe(b, disp, key, mods.join("+"))
+            text = text.charAt(0).toUpperCase() + text.slice(1)
             const label = root.keyNames[key] ?? (key.length === 1 ? key.toUpperCase() : key)
             const list = groups[sec] ?? (groups[sec] = [])
             // Gabung dengan baris yang modifier & keterangannya sama

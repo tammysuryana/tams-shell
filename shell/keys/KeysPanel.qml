@@ -11,6 +11,9 @@ Item {
 
     property bool open: false
     property int panelWidth: 1100
+    property int maxHeight: 700        // lebih tinggi dari ini: isinya digulir
+    // Lebar tetap tiap kolom (3 kolom, margin 28, jarak antarkolom 28)
+    readonly property real colW: (panelWidth - 56 - 56) / 3
     readonly property int r: Theme.panelRadius
 
     width: panelWidth + r * 2
@@ -21,9 +24,42 @@ Item {
 
     onOpenChanged: if (open) { Keybinds.refresh(); body.forceActiveFocus() }
 
+    // Lebar deretan kotak tombol (sama dengan ukuran Chip di bawah)
+    FontMetrics { id: chipFont; font.family: Theme.mono; font.pixelSize: 11 }
+    function chipsWidth(parts) {
+        let w = 0
+        for (const p of parts) {
+            const t = chipFont.advanceWidth(p)
+            w += (p === " / " || p === "…") ? t : Math.max(22, t + 12)
+        }
+        return w + 4 * Math.max(0, parts.length - 1) + 1
+    }
+
+    // Bagi deretan kotak tombol ke beberapa baris selebar maks. maxW (pemisah "/" ikut ke baris berikutnya)
+    function chipLines(parts, maxW) {
+        const lines = [[]]
+        let w = 0
+        for (const p of parts) {
+            const pw = root.chipsWidth([p]) + 4
+            if (w + pw > maxW && lines[lines.length - 1].length > 0 && p !== " / " && p !== "…") { lines.push([]); w = 0 }
+            lines[lines.length - 1].push(p)
+            w += pw
+        }
+        return lines
+    }
+
+    // Daftar dari model QML belum tentu array JS biasa: salin dulu
+    function arr(l) {
+        const out = []
+        for (let i = 0; l && i < l.length; i++) out.push(l[i])
+        return out
+    }
+
     function keyParts(r) {
-        const k = r.keys
+        const k = arr(r.keys)
         if (r.range) return [k[0], "…", k[k.length - 1]]
+        // Banyak tombol pendek (huruf, panah): satu kotak saja, mis. "← → ↑ ↓"
+        if (k.length > 2 && k.every(x => x.length <= 2)) return [k.join(" ")]
         const out = []
         for (let i = 0; i < k.length; i++) {
             if (i > 0) out.push(" / ")
@@ -57,40 +93,55 @@ Item {
         y: root.height - height
         width: root.panelWidth
         height: implicitHeight
-        implicitHeight: content.implicitHeight + 56
+        implicitHeight: Math.min(content.implicitHeight + 56, root.maxHeight)
         color: Theme.frame
         radius: root.r
         focus: true
         Keys.onEscapePressed: Panels.closeAll()
+        Keys.onDownPressed: flick.scrollBy(60)
+        Keys.onUpPressed: flick.scrollBy(-60)
+        Keys.onPressed: e => {
+            if (e.key === Qt.Key_PageDown) flick.scrollBy(flick.height - 60)
+            else if (e.key === Qt.Key_PageUp) flick.scrollBy(-(flick.height - 60))
+        }
         // sudut bawah lurus (menyambung ke bingkai)
         Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: root.r; color: Theme.frame }
 
-        ColumnLayout {
-            id: content
-            anchors { left: parent.left; right: parent.right; top: parent.top; margins: 28 }
-            spacing: 18
+        Flickable {
+            id: flick
+            anchors { fill: parent; margins: 28; bottomMargin: 0 }
+            contentHeight: content.implicitHeight + 28
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+            function scrollBy(d) { contentY = Math.max(0, Math.min(contentHeight - height, contentY + d)) }
 
-            RowLayout {
-                Layout.fillWidth: true
-                Txt { text: "Pintasan keyboard"; font.pixelSize: 22; font.weight: Font.Bold; Layout.fillWidth: true }
-                Txt { text: "Super + /  buka · Esc  tutup"; color: Theme.muted; font.pixelSize: 12 }
-            }
+            ColumnLayout {
+                id: content
+                width: flick.width
+                spacing: 18
 
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 28
-                Repeater {
-                    model: root.columns
-                    ColumnLayout {
-                        id: column
-                        required property var modelData
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 1
-                        Layout.alignment: Qt.AlignTop
-                        spacing: 14
-                        Repeater {
-                            model: column.modelData
-                            Section { Layout.fillWidth: true }
+                RowLayout {
+                    Layout.fillWidth: true
+                    Txt { text: "Pintasan keyboard"; font.pixelSize: 22; font.weight: Font.Bold; Layout.fillWidth: true }
+                    Txt { text: "Super + /  buka · Esc  tutup"; color: Theme.muted; font.pixelSize: 12 }
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 28
+                    Repeater {
+                        model: root.columns
+                        ColumnLayout {
+                            id: column
+                            required property var modelData
+                            Layout.preferredWidth: root.colW
+                            Layout.maximumWidth: root.colW
+                            Layout.alignment: Qt.AlignTop
+                            spacing: 14
+                            Repeater {
+                                model: column.modelData
+                                Section { Layout.fillWidth: true }
+                            }
                         }
                     }
                 }
@@ -118,17 +169,24 @@ Item {
                 Layout.fillWidth: true
                 Layout.minimumHeight: 28
                 spacing: 10
-                Txt { Layout.fillWidth: true; text: row.modelData.text; wrapMode: Text.Wrap; font.pixelSize: 13 }
-                Row {
+                Txt { Layout.fillWidth: true; Layout.minimumWidth: 110; text: row.modelData.text; wrapMode: Text.Wrap; font.pixelSize: 13 }
+                // Kotak tombol; dibagi ke beberapa baris (dihitung sekali di JS, tanpa Flow
+                // supaya tata letaknya tidak saling bergantung)
+                Column {
+                    readonly property var lines: root.chipLines(root.arr(row.modelData.mods).concat(root.keyParts(row.modelData)), root.colW - 120)
+                    Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                     spacing: 4
                     Repeater {
-                        model: row.modelData.mods
-                        Chip { required property string modelData; label: modelData }
-                    }
-                    Repeater {
-                        // Rentang angka ditulis "1 … 0", pilihan lain dipisah "/"
-                        model: root.keyParts(row.modelData)
-                        Chip { required property string modelData; label: modelData; plain: modelData === " / " || modelData === "…" }
+                        model: parent.lines
+                        Row {
+                            required property var modelData
+                            anchors.right: parent.right
+                            spacing: 4
+                            Repeater {
+                                model: parent.modelData
+                                Chip { required property string modelData; label: modelData; plain: modelData === " / " || modelData === "…" }
+                            }
+                        }
                     }
                 }
             }

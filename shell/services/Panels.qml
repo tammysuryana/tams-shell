@@ -16,6 +16,7 @@ Singleton {
     property bool btList: false       // ... atau daftar Bluetooth
     property bool audioList: false    // ... atau daftar keluaran suara
     property string screenName: ""
+    property bool superTap: false     // Super sedang ditahan tanpa tombol lain (lepas = launcher)
 
     signal pickWallpaper()   // buka pemilih file wallpaper (di layar yang aktif)
 

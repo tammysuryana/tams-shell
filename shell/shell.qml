@@ -43,6 +43,17 @@ ShellRoot {
     GlobalShortcut { appid: "tams"; name: "launcher"; description: "Buka/tutup launcher"; onPressed: Panels.toggleLauncher() }
     GlobalShortcut { appid: "tams"; name: "dashboard"; description: "Buka/tutup dashboard"; onPressed: Panels.toggleDashboard() }
     GlobalShortcut { appid: "tams"; name: "keys"; description: "Buka/tutup daftar pintasan"; onPressed: Panels.toggleKeys() }
+    // Super ditekan sendiri lalu dilepas = launcher; tombol lain selama Super ditahan membatalkannya
+    GlobalShortcut {
+        appid: "tams"; name: "launcherTap"; description: "Super ditekan sendiri: launcher"
+        onPressed: Panels.superTap = true
+        onReleased: { if (Panels.superTap) Panels.toggleLauncher(); Panels.superTap = false }
+    }
+    GlobalShortcut { appid: "tams"; name: "launcherTapCancel"; description: "Batalkan launcher dari Super"; onPressed: Panels.superTap = false }
+    GlobalShortcut { appid: "tams"; name: "lock"; description: "Kunci layar"; onPressed: { Panels.closeAll(); Power.lock() } }
+    GlobalShortcut { appid: "tams"; name: "wallpaper"; description: "Pilih wallpaper"; onPressed: Panels.openWallpaperPicker() }
+    GlobalShortcut { appid: "tams"; name: "theme"; description: "Ganti gelap / terang"; onPressed: Settings.set("mode", Settings.mode === "dark" ? "light" : "dark") }
+    GlobalShortcut { appid: "tams"; name: "caffeine"; description: "Tetap menyala"; onPressed: Idle.caffeine = !Idle.caffeine }
     GlobalShortcut { appid: "tams"; name: "screenshotArea"; description: "Screenshot area / jendela"; onPressed: Screenshot.take("area") }
     GlobalShortcut { appid: "tams"; name: "screenshotScreen"; description: "Screenshot layar aktif"; onPressed: Screenshot.take("screen") }
     GlobalShortcut { appid: "tams"; name: "screenshotAll"; description: "Screenshot semua layar"; onPressed: Screenshot.take("all") }

@@ -123,6 +123,7 @@ Scope {
             id: keysPanel
             open: Panels.keys && root.here
             panelWidth: Math.min(1100, overlay.width - 2 * Theme.edge - 2 * Theme.panelRadius - 40)
+            maxHeight: overlay.height - Theme.barHeight - Theme.edge - 24
             anchors.horizontalCenter: parent.horizontalCenter
             y: overlay.height - Theme.edge - height
         }
