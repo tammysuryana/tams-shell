@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Pemakaian CPU & RAM, dibaca langsung dari /proc tiap 2 detik.
+// Pemakaian CPU & RAM, dibaca langsung dari /proc tiap 5 detik (hemat CPU saat idle).
 Singleton {
     id: root
 
@@ -19,7 +19,7 @@ Singleton {
     FileView { id: meminfo; path: "/proc/meminfo" }
 
     Timer {
-        interval: 2000
+        interval: 5000
         running: true
         repeat: true
         triggeredOnStart: true

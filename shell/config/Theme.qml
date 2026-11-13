@@ -50,8 +50,8 @@ Singleton {
     readonly property string mono: "JetBrainsMono Nerd Font"
     readonly property int fontSize: 14
 
-    // Durasi animasi (ms)
-    readonly property int anim: 220
+    // Durasi animasi panel (ms): dipersingkat; saat sakelar "Animasi" mati tinggal transisi sangat singkat (hemat CPU)
+    readonly property int anim: Settings.animations ? 160 : 90
 
     FontLoader {
         id: interLoader
