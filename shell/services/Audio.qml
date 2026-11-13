@@ -21,6 +21,14 @@ Singleton {
     readonly property var current: outputs.find(o => o.active) ?? null
     property var pending: null      // { card, port } yang sedang dipindah ke sana
     property var _sinks: []
+    // Kartu dengan kontrol ALSA "Playback Path" (codec Rockchip RK809/RK817 di kernel vendor):
+    // speaker / headphone bukan port PipeWire terpisah, melainkan enum mixer. { "<alsa.card>": { id, value } }
+    property var _paths: ({})
+    readonly property var pathOptions: [
+        { path: "SPK",    label: "Speaker",             kind: "speaker" },
+        { path: "HP",     label: "Headphone (jack)",    kind: "headphones" },
+        { path: "SPK_HP", label: "Speaker + Headphone", kind: "speaker" },
+    ]
 
     signal changed()
 
@@ -33,6 +41,7 @@ Singleton {
 
     function select(o) {
         if (o.active) return
+        if (o.path) run(["amixer", "-D", "hw:" + o.alsaId, "cset", "name='Playback Path'", o.path])
         root.pending = { card: o.card, port: o.port }
         pendingTimeout.restart()
         if (o.profile !== o.cardProfile) {
@@ -57,9 +66,15 @@ Singleton {
 
     function run(cmd) { Quickshell.execDetached(cmd); refreshDelay.restart() }
 
-    function parse(cardsJson, sinksJson, defaultSink) {
+    function parse(cardsJson, sinksJson, defaultSink, pathsText) {
         const cards = JSON.parse(cardsJson)
         const sinks = JSON.parse(sinksJson)
+        const paths = {}
+        for (const line of (pathsText || "").split("\n")) {
+            const m = line.match(/^(\d+) (\S+) (\S+)$/)   // "<index> <id> <Playback Path>"
+            if (m) paths[m[1]] = { id: m[2], value: m[3] }
+        }
+        root._paths = paths
         const list = []
         for (const c of cards) {
             const bt = c.name.startsWith("bluez_card")
@@ -97,6 +112,17 @@ Singleton {
                 if (!internal && !bt) sub.push(c.properties["device.description"] || c.name)
                 if (!plugged) sub.push("Tidak tercolok")
 
+                const pp = paths[c.properties["alsa.card"]]
+                if (pp && kind === "speaker") {
+                    // RK809: satu port analog dipecah jadi Speaker / Headphone / keduanya (enum "Playback Path")
+                    for (const opt of root.pathOptions) list.push({
+                        key: c.name + "|" + pn + "|" + opt.path, label: opt.label, sub: sub.join(" · "), kind: opt.kind,
+                        plugged: plugged, active: active && pp.value === opt.path,
+                        card: c.name, cardProfile: c.active_profile, profile: profile, port: pn,
+                        path: opt.path, alsaId: pp.id
+                    })
+                    continue
+                }
                 list.push({
                     key: c.name + "|" + pn, label: label, sub: sub.join(" · "), kind: kind,
                     plugged: plugged, active: active,
@@ -114,13 +140,14 @@ Singleton {
 
     Process {
         id: readProc
-        command: ["sh", "-c", "pactl -f json list cards; echo; echo @@; pactl -f json list sinks; echo; echo @@; pactl get-default-sink"]
+        command: ["sh", "-c", "pactl -f json list cards; echo; echo @@; pactl -f json list sinks; echo; echo @@; pactl get-default-sink; echo @@; "
+            + "for d in /proc/asound/card[0-9]*; do n=${d#/proc/asound/card}; i=$(cat $d/id); v=$(amixer -D hw:$n cget name='Playback Path' 2>/dev/null | sed -n \"s/.*: values=//p\"); [ -n \"$v\" ] && echo \"$n $i $v\"; done; true"]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
                 const part = text.split("\n@@\n")
                 if (part.length < 3) return
-                try { root.parse(part[0], part[1], part[2].trim()) } catch (e) { console.warn("Audio: " + e) }
+                try { root.parse(part[0], part[1], part[2].trim(), part[3] || "") } catch (e) { console.warn("Audio: " + e) }
             }
         }
     }
