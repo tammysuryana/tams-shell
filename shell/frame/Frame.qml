@@ -73,20 +73,38 @@ Scope {
         screen: root.screen
         WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "tams-overlay"
-        // OnDemand, bukan Exclusive: di Hyprland fokus Exclusive langsung membatalkan HyprlandFocusGrab
-        // di bawah -> launcher tertutup lagi begitu dibuka. Fokus keyboard tetap didapat lewat grab.
-        // Dashboard juga butuh keyboard (kolom kata sandi WiFi).
-        WlrLayershell.keyboardFocus: launcher.open || dashboard.open || settings.open || keysPanel.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        readonly property bool panelOpen: launcher.open || dashboard.open || settings.open || keysPanel.open
+        // Exclusive selama ada panel terbuka: keyboard tetap ke panel walau kursor bergeser ke jendela lain
+        // (follow_mouse). Dulu OnDemand + HyprlandFocusGrab: kursor goyang -> fokus pindah -> grab lepas ->
+        // dashboard tertutup, ketikan sandi WiFi / pilihan suara & Bluetooth hilang.
+        WlrLayershell.keyboardFocus: panelOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
         exclusionMode: ExclusionMode.Ignore
         anchors { top: true; bottom: true; left: true; right: true }
         color: "transparent"
 
+        // Saat panel terbuka seluruh layar di bawah bar menerima klik (untuk "klik di luar = tutup");
+        // bar tetap bisa diklik karena tidak termasuk area ini.
         mask: Region {
+            Region { x: 0; y: Theme.barHeight; width: overlay.panelOpen ? overlay.width : 0; height: overlay.panelOpen ? overlay.height - Theme.barHeight : 0 }
             Region { item: dashboard }
             Region { item: launcher }
             Region { item: settings }
             Region { item: keysPanel }
             Region { item: popups }
+        }
+
+        // Klik di luar panel = tutup (menggantikan HyprlandFocusGrab)
+        MouseArea {
+            anchors.fill: parent
+            anchors.topMargin: Theme.barHeight
+            enabled: overlay.panelOpen
+            acceptedButtons: Qt.AllButtons
+            function inside(p, mx, my) { return p.visible && p.width > 0 && p.height > 0 && mx >= p.x && mx < p.x + p.width && my >= p.y && my < p.y + p.height }
+            onPressed: mouse => {
+                const mx = mouse.x, my = mouse.y + Theme.barHeight
+                if (inside(dashboard, mx, my) || inside(launcher, mx, my) || inside(settings, mx, my) || inside(keysPanel, mx, my) || inside(popups, mx, my)) { mouse.accepted = false; return }
+                Panels.closeAll()
+            }
         }
 
         // Sudut cekung di ke-4 sudut dalam bingkai
@@ -142,10 +160,4 @@ Scope {
         }
     }
 
-    // Klik di luar panel = tutup
-    HyprlandFocusGrab {
-        active: (Panels.dashboard || Panels.launcher || Panels.settings || Panels.keys) && root.here
-        windows: [overlay, top]
-        onCleared: Panels.closeAll()
-    }
 }

@@ -13,13 +13,15 @@ ColumnLayout {
 
     property bool active: false            // dashboard sedang terbuka
     property bool expanded: false
-    property var prompt: null              // jaringan yang sedang diminta kata sandinya
+    property string prompt: ""             // NAMA jaringan yang sedang diminta kata sandinya (string, bukan objek:
+                                           // objek jaringan bisa dibuat ulang NetworkManager saat memindai)
+    property string pskDraft: ""           // ketikan kata sandi disimpan di panel, bukan di baris daftar
     property var trying: null              // jaringan yang terakhir dicoba disambung
     property string message: ""
 
     spacing: 0
 
-    onActiveChanged: if (!active) { expanded = false; prompt = null; message = "" }
+    onActiveChanged: if (!active) { expanded = false; prompt = ""; pskDraft = ""; message = "" }
 
     Connections {
         target: Panels
@@ -31,15 +33,22 @@ ColumnLayout {
         when: Net.wifiDevice !== null
         target: Net.wifiDevice
         property: "scannerEnabled"
-        value: root.active && root.expanded && Net.wifiOn
+        value: root.active && root.expanded && Net.wifiOn && root.prompt === ""   // jeda pindai saat mengetik sandi
     }
 
-    readonly property var networks: {
+    // Daftar "hidup" ikut hasil pindai; daftar yang DITAMPILKAN dibekukan selama kolom sandi terbuka
+    // supaya baris tidak dibuat ulang / berpindah di bawah kursor ketika sinyal berubah.
+    readonly property var liveNetworks: {
         if (!Net.wifiDevice) return []
+        const bucket = n => Math.round(n.signalStrength / 20)   // sinyal dibulatkan: urutan tidak goyang tiap pindai
         return Net.wifiDevice.networks.values
             .filter(n => n.name !== "")
-            .sort((a, b) => (b.connected - a.connected) || (b.known - a.known) || (b.signalStrength - a.signalStrength))
+            .sort((a, b) => (b.connected - a.connected) || (b.known - a.known) || (bucket(b) - bucket(a)) || a.name.localeCompare(b.name))
     }
+    property var networks: []
+    onLiveNetworksChanged: if (prompt === "") networks = liveNetworks
+    onPromptChanged: if (prompt === "") networks = liveNetworks
+    Component.onCompleted: networks = liveNetworks
 
     function isOpen(n) { return n.security === WifiSecurityType.Open || n.security === WifiSecurityType.Owe }
     function isPsk(n) {
@@ -51,11 +60,12 @@ ColumnLayout {
         root.message = ""
         if (n.connected || n.stateChanging) return
         if (n.known || isOpen(n)) {
-            root.prompt = null
+            root.prompt = ""
             root.trying = n
             n.connect()
         } else if (isPsk(n)) {
-            root.prompt = (root.prompt === n) ? null : n
+            root.pskDraft = ""
+            root.prompt = (root.prompt === n.name) ? "" : n.name
         } else {
             // WPA-Enterprise dll. butuh identitas/sertifikat: serahkan ke nmtui
             root.message = "Jaringan enterprise: atur lewat terminal (nmtui)"
@@ -67,7 +77,8 @@ ColumnLayout {
         if (psk.length < 8) { root.message = "Kata sandi minimal 8 karakter"; return }
         root.message = ""
         root.trying = n
-        root.prompt = null
+        root.prompt = ""
+        root.pskDraft = ""
         n.connectWithPsk(psk)
     }
 
@@ -78,7 +89,7 @@ ColumnLayout {
             const n = root.trying
             if (reason === ConnectionFailReason.NoSecrets && root.isPsk(n)) {
                 root.message = "Kata sandi salah untuk " + n.name
-                root.prompt = n
+                root.prompt = n.name
             } else {
                 root.message = "Gagal menyambung ke " + n.name + " (" + ConnectionFailReason.toString(reason) + ")"
             }
@@ -94,7 +105,7 @@ ColumnLayout {
         checked: Net.wifiOn
         expanded: root.expanded
         onToggled: Net.toggleWifi()
-        onExpandClicked: { root.expanded = !root.expanded; root.prompt = null; root.message = "" }
+        onExpandClicked: { root.expanded = !root.expanded; root.prompt = ""; root.message = "" }
     }
 
     // Daftar jaringan
@@ -126,7 +137,8 @@ ColumnLayout {
                 clip: true
                 spacing: 2
                 boundsBehavior: Flickable.StopAtBounds
-                model: root.networks
+                // ScriptModel: delegat dipertahankan (diff), bukan dibuat ulang tiap daftar berubah
+                model: ScriptModel { values: root.networks }
                 delegate: NetRow {}
             }
 
@@ -146,10 +158,10 @@ ColumnLayout {
         id: row
         required property var modelData
         readonly property var n: modelData
-        readonly property bool asking: root.prompt === n
+        readonly property bool asking: root.prompt === n.name
         width: ListView.view.width
 
-        onAskingChanged: if (asking) { pw.text = ""; pw.forceActiveFocus() }
+        onAskingChanged: if (asking) { pw.text = root.pskDraft; pw.forceActiveFocus() }
 
         Rectangle {
             width: parent.width
@@ -218,7 +230,9 @@ ColumnLayout {
                     clip: true
                     Keys.onReturnPressed: root.submit(row.n, text)
                     Keys.onEnterPressed: root.submit(row.n, text)
-                    Keys.onEscapePressed: root.prompt = null
+                    Keys.onEscapePressed: root.prompt = ""
+                    onTextChanged: if (row.asking) root.pskDraft = text
+                    Component.onCompleted: if (row.asking) { text = root.pskDraft; forceActiveFocus() }
                     Txt { visible: pw.text === ""; text: "Kata sandi, lalu Enter"; color: Theme.muted }
                 }
                 Txt {

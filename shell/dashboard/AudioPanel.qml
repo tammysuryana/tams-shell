@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import qs.config
 import qs.services
 import qs.widgets
@@ -45,7 +46,7 @@ ColumnLayout {
             anchors { left: parent.left; right: parent.right; top: parent.top; margins: 6 }
             spacing: 2
             Repeater {
-                model: Audio.outputs
+                model: ScriptModel { values: Audio.outputs; objectProp: "key" }   // baris tetap saat refresh
                 delegate: OutRow { Layout.fillWidth: true }
             }
         }

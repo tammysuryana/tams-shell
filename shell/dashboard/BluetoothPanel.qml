@@ -138,7 +138,7 @@ ColumnLayout {
                 clip: true
                 spacing: 2
                 boundsBehavior: Flickable.StopAtBounds
-                model: root.devices
+                model: ScriptModel { values: root.devices }   // delegat dipertahankan saat daftar berubah
                 delegate: DevRow {}
             }
 
