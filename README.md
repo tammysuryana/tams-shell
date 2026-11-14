@@ -167,6 +167,7 @@ Semuanya tersimpan di `~/.config/tams/settings.json`, yang juga bisa diedit lang
   "colorSource": "manual",
   "accent": "#e0af68",
   "edge": 10,
+  "barHeight": 44,
   "gapsIn": 2,
   "gapsOut": 2,
   "border": 2,
