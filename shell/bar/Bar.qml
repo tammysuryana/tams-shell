@@ -14,14 +14,14 @@ Item {
     // Kiri
     Row {
         anchors.left: parent.left
-        anchors.leftMargin: 18
+        anchors.leftMargin: Theme.ui(18)
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 18
+        spacing: Theme.ui(18)
 
         Rectangle {
-            width: 26; height: 26; radius: 8
+            width: Theme.ui(26); height: Theme.ui(26); radius: Theme.ui(8)
             color: logoMouse.containsMouse ? Theme.surface2 : "transparent"
-            Image { anchors.centerIn: parent; source: Qt.resolvedUrl("../assets/logo.svg"); width: 22; height: 22; sourceSize: Qt.size(44, 44) }
+            Image { anchors.centerIn: parent; source: Qt.resolvedUrl("../assets/logo.svg"); width: Theme.ui(22); height: Theme.ui(22); sourceSize: Qt.size(44, 44) }
             MouseArea { id: logoMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Panels.toggleLauncher() }
         }
 
@@ -41,17 +41,17 @@ Item {
     // Tengah: jam, klik = dashboard
     Rectangle {
         anchors.centerIn: parent
-        width: clockRow.implicitWidth + 28
-        height: 32
-        radius: 10
+        width: clockRow.implicitWidth + Theme.ui(28)
+        height: Theme.ui(32)
+        radius: Theme.ui(10)
         color: clockMouse.containsMouse || (Panels.dashboard && Panels.screenName === (root.monitor ? root.monitor.name : "")) ? Theme.surface : "transparent"
         Behavior on color { ColorAnimation { duration: 150 } }
         Row {
             id: clockRow
             anchors.centerIn: parent
             spacing: 10
-            Txt { mono: true; font.pixelSize: 16; font.weight: Font.Bold; text: Qt.formatTime(clock.date, "HH:mm") }
-            Txt { color: Theme.muted; text: Qt.locale().toString(clock.date, "ddd d MMM") }
+            Txt { mono: true; font.pixelSize: Theme.ui(16); font.weight: Font.Bold; text: Qt.formatTime(clock.date, "HH:mm") }
+            Txt { color: Theme.muted; font.pixelSize: Theme.ui(Theme.fontSize); text: Qt.locale().toString(clock.date, "ddd d MMM") }
         }
         MouseArea { id: clockMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Panels.toggleDashboard() }
     }
@@ -59,7 +59,7 @@ Item {
     // Kanan
     Item {
         anchors.right: parent.right
-        anchors.rightMargin: 20
+        anchors.rightMargin: Theme.ui(20)
         anchors.verticalCenter: parent.verticalCenter
         width: status.implicitWidth
         height: status.implicitHeight

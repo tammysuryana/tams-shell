@@ -42,6 +42,6 @@ hl.window_rule({
     name   = "tams-shell-dialog",
     match  = { class = "org.quickshell" },
     float  = true,
-    size   = "900 600",
+    size   = "70% 80%",   -- relatif terhadap layar (papan 1920x540 maupun laptop)
     center = true,
 })

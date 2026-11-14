@@ -26,17 +26,18 @@ Item {
         height: 20
 
         Rectangle { anchors.verticalCenter: parent.verticalCenter; width: parent.width; height: 6; radius: 3; color: Theme.surface2 }
-        Rectangle { anchors.verticalCenter: parent.verticalCenter; width: parent.width * Math.min(1, root.value); height: 6; radius: 3; color: root.fill }
+        // kenop selalu di dalam jalur: pada 0 menempel kiri, pada 1 menempel kanan (bukan setengah keluar)
+        Rectangle { anchors.verticalCenter: parent.verticalCenter; width: 8 + (parent.width - 16) * Math.min(1, root.value); height: 6; radius: 3; color: root.fill }
         Rectangle {
             anchors.verticalCenter: parent.verticalCenter
-            x: parent.width * Math.min(1, root.value) - 8
+            x: (parent.width - 16) * Math.min(1, Math.max(0, root.value))
             width: 16; height: 16; radius: 8
             color: Theme.text
         }
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
-            function apply(mx) { root.moved(Math.max(0, Math.min(1, mx / width))) }
+            function apply(mx) { root.moved(Math.max(0, Math.min(1, (mx - 8) / (width - 16)))) }
             onPressed: e => apply(e.x)
             onPositionChanged: e => { if (pressed) apply(e.x) }
             onWheel: e => root.moved(Math.max(0, Math.min(1, root.value + (e.angleDelta.y > 0 ? 0.05 : -0.05))))

@@ -24,6 +24,7 @@ Singleton {
     readonly property string colorSource: adapter.colorSource   // "manual" | "wallpaper"
     readonly property color accent: adapter.accent
     readonly property int edge: adapter.edge
+    readonly property int barHeight: adapter.barHeight   // tinggi bar atas (px); 44 laptop, ~30 untuk papan tampilan pendek
 
     // Tampilan jendela Hyprland (diterapkan oleh HyprLook)
     readonly property int gapsIn: adapter.gapsIn
@@ -45,7 +46,7 @@ Singleton {
     readonly property var displays: adapter.displays
 
     readonly property var defaults: ({
-        mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, workspaces: 5, workspaceStyle: "number", terminal: "kitty",
+        mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, barHeight: 44, workspaces: 5, workspaceStyle: "number", terminal: "kitty",
         gapsIn: 2, gapsOut: 2, border: 2, rounding: 12,
         blur: true, animations: true, inactiveOpacity: 1.0
     })
@@ -81,6 +82,7 @@ Singleton {
             property string colorSource: "manual"
             property string accent: "#e0af68"
             property int edge: 10
+            property int barHeight: 44
             property int gapsIn: 2
             property int gapsOut: 2
             property int border: 2

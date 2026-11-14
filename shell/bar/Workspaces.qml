@@ -50,8 +50,8 @@ Row {
             readonly property bool active: wsId === root.activeId
             readonly property bool used: root.occupied(wsId)
             readonly property bool dot: root.style === "dot"
-            width: dot ? (active ? 30 : 16) : Math.max(26, txt.implicitWidth + 12)
-            height: 26
+            width: dot ? Theme.ui(active ? 30 : 16) : Math.max(Theme.ui(26), txt.implicitWidth + Theme.ui(12))
+            height: Theme.ui(26)
             Behavior on width { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
 
             // Gaya teks: kotak bulat di belakang angka/huruf
@@ -68,7 +68,7 @@ Row {
                 anchors.centerIn: parent
                 text: root.label(ws.wsId)
                 mono: root.style !== "kanji"
-                font.pixelSize: 13
+                font.pixelSize: Theme.ui(13)
                 font.weight: ws.active ? Font.Bold : Font.Normal
                 color: ws.active ? Theme.frame : ws.used ? Theme.text : Theme.muted
             }
@@ -77,9 +77,9 @@ Row {
             Rectangle {
                 visible: ws.dot
                 anchors.centerIn: parent
-                width: ws.active ? 20 : 8
-                height: 8
-                radius: 4
+                width: Theme.ui(ws.active ? 20 : 8)
+                height: Theme.ui(8)
+                radius: Theme.ui(4)
                 color: ws.active ? Theme.accent : ws.used ? Theme.text : "transparent"
                 border.width: ws.active || ws.used ? 0 : 1.5
                 border.color: mouse.containsMouse ? Theme.text : Theme.muted

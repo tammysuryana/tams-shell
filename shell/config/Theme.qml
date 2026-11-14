@@ -40,7 +40,10 @@ Singleton {
     readonly property color hover: Qt.rgba(text.r, text.g, text.b, 0.04)
 
     // Ukuran bingkai: tebal atas (berisi bar), tebal sisi, lengkung sudut dalam
-    readonly property int barHeight: 44
+    readonly property int barHeight: Math.max(24, Settings.barHeight)
+    // skala elemen bar relatif terhadap tinggi bawaan 44 px (logo, pil jam, workspace, ikon status)
+    readonly property real barScale: barHeight / 44
+    function ui(v) { return Math.round(v * barScale) }
     readonly property int edge: Settings.edge
     readonly property int radius: 22
     readonly property int panelRadius: 30
