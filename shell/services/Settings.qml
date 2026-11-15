@@ -45,6 +45,10 @@ Singleton {
     // Layar (diterapkan oleh Displays): { "HDMI-A-1": { position, mode, scale }, ... }
     readonly property var displays: adapter.displays
 
+    // Posisi widget pemutar + lirik di wallpaper (piksel; -1 = default pojok kiri-bawah)
+    readonly property int mediaX: adapter.mediaX
+    readonly property int mediaY: adapter.mediaY
+
     readonly property var defaults: ({
         mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, barHeight: 44, workspaces: 5, workspaceStyle: "number", terminal: "kitty",
         gapsIn: 2, gapsOut: 2, border: 2, rounding: 12,
@@ -96,6 +100,8 @@ Singleton {
             property int idleScreenOff: 600
             property int idleSuspend: 0
             property bool lockOnSleep: true
+            property int mediaX: -1
+            property int mediaY: -1
         }
     }
 }

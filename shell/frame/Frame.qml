@@ -38,6 +38,10 @@ Scope {
             asynchronous: true
             sourceSize: root.screen ? Qt.size(root.screen.width, root.screen.height) : Qt.size(0, 0)
         }
+        // Pemutar musik + lirik karaoke di atas wallpaper (bisa diseret; hanya layar aktif, saat ada musik)
+        DesktopMedia {
+            visible: root.here && Lyrics.player !== null
+        }
     }
 
     // Bingkai atas + bar
