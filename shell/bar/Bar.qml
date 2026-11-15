@@ -74,14 +74,11 @@ Item {
         width: status.implicitWidth
         height: status.implicitHeight
         Status { id: status }
+        // Klik mana saja di kanan bar -> Control Center lengkap.
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
-            onClicked: mouse => {
-                const p = mapToItem(status.net, mouse.x, mouse.y)
-                if (status.net.contains(p) && !Panels.dashboard) Panels.openWifi()
-                else Panels.toggleDashboard()
-            }
+            onClicked: Panels.toggleDashboard()
         }
     }
 

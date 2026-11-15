@@ -25,6 +25,9 @@ ShellRoot {
     // Jaga symlink wallpaper layar kunci tetap terbarui (hyprlock membaca ~/.config/tams/lock)
     Connections { target: LockWallpaper }
 
+    // Pantau CPU/RAM terus (meter di Control Center) agar langsung akurat saat dibuka
+    Connections { target: SysStats }
+
     // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / bluetooth / audio / keys / screenshot area|screen|all / caffeine / settings / wallpaper / lock / close)
     IpcHandler {
         target: "tams"

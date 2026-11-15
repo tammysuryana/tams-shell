@@ -112,6 +112,41 @@ Item {
                 Switch { Layout.fillWidth: true; label: "Tetap menyala"; checked: Idle.caffeine; onToggled: Idle.caffeine = !Idle.caffeine }
                 Slider { Layout.fillWidth: true; Layout.topMargin: 12; icon: Audio.muted ? Icons.volumeMute : Icons.volume; value: Audio.volume; onMoved: v => Audio.setVolume(v) }
                 Slider { Layout.fillWidth: true; visible: Brightness.available; icon: Icons.brightness; value: Brightness.value; onMoved: v => Brightness.set(v) }
+
+                // Meter sistem (CPU & RAM) — dipindah dari bar ke Control Center.
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 16
+                    spacing: 16
+                    Repeater {
+                        model: [
+                            { ic: Icons.cpu, v: SysStats.cpu, t: Math.round(SysStats.cpu * 100) + "%" },
+                            { ic: Icons.memory, v: SysStats.mem, t: SysStats.memUsed.toFixed(1).replace(".", ",") + " / " + SysStats.memTotal.toFixed(1).replace(".", ",") + " G" }
+                        ]
+                        delegate: ColumnLayout {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            Layout.preferredWidth: 1
+                            spacing: 6
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Txt { mono: true; font.pixelSize: 15; color: Theme.muted; text: modelData.ic }
+                                Item { Layout.fillWidth: true }
+                                Txt { font.pixelSize: 12; color: Theme.muted; text: modelData.t }
+                            }
+                            Rectangle {
+                                Layout.fillWidth: true
+                                height: 5; radius: 3; color: Theme.surface2
+                                Rectangle {
+                                    height: parent.height; radius: 3
+                                    width: parent.width * Math.max(0, Math.min(1, modelData.v))
+                                    color: Theme.accent
+                                    Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Kolom 3: notifikasi + daya
