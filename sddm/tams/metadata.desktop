@@ -1,0 +1,12 @@
+[SddmGreeterTheme]
+Name=tams-shell
+Description=Layar login tams-shell
+Author=tams (tammysuryana)
+License=MIT
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+Theme-Id=tams
+Theme-API=2.0
+QtVersion=6

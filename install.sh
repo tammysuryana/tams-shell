@@ -88,6 +88,16 @@ mkdir -p "$HYPR"
 if [ ! -f "$HYPR/hyprlock.conf" ] || head -1 "$HYPR/hyprlock.conf" | grep -qE "viaOS|tams-shell"; then
   cp "$REPO/hypr/hyprlock.conf" "$HYPR/hyprlock.conf" && ok "layar kunci -> $HYPR/hyprlock.conf"
 fi
+# Layar login tams-shell (tema SDDM) — opsional, butuh sudo (tulis ke /usr/share & /etc)
+if command -v sddm >/dev/null && [ -d "$REPO/sddm/tams" ]; then
+  if tanya "Pasang layar login tams-shell (tema SDDM, butuh sudo)?"; then
+    sudo install -dm755 /usr/share/sddm/themes /etc/sddm.conf.d
+    sudo rm -rf /usr/share/sddm/themes/tams
+    sudo cp -r "$REPO/sddm/tams" /usr/share/sddm/themes/tams
+    printf '[Theme]\nCurrent=tams\nCursorSize=24\n' | sudo tee /etc/sddm.conf.d/10-tams.conf >/dev/null
+    ok "layar login SDDM -> tams (berlaku saat logout / reboot)"
+  fi
+fi
 if [ -f "$HYPR/hyprland.lua" ]; then
   cp "$REPO/hypr/tams-shell.lua" "$HYPR/tams-shell.lua"
   if ! grep -q 'require("tams-shell")' "$HYPR/hyprland.lua"; then
