@@ -31,10 +31,20 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             readonly property var w: Hyprland.activeToplevel
             readonly property var ipc: w ? w.lastIpcObject : null
-            text: w && w.title ? (ipc && ipc.class ? "<b>" + ipc.class + "</b>  <font color='" + Theme.muted + "'>" + w.title + "</font>" : w.title) : ""
+            // Nama aplikasi dari class, dipercantik: "org.foo.Bar"/"brave-browser" -> "Bar"/"Brave browser"
+            function pretty(c) {
+                if (!c) return ""
+                const s = String(c).split(".").pop().replace(/[-_]/g, " ").trim()
+                return s.charAt(0).toUpperCase() + s.slice(1)
+            }
+            readonly property string app: pretty(ipc && ipc.class ? ipc.class : "")
+            // Nama aplikasi menonjol; judul jendela jadi keterangan halus di belakangnya.
+            text: w && w.title
+                ? (app ? "<b>" + app + "</b>  <font color='" + Theme.muted + "'>" + w.title + "</font>" : w.title)
+                : ""
             textFormat: Text.StyledText
             elide: Text.ElideRight
-            width: Math.min(implicitWidth, root.width * 0.28)
+            width: Math.min(implicitWidth, root.width * 0.26)
         }
     }
 
