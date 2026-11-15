@@ -46,7 +46,7 @@ Singleton {
     readonly property var displays: adapter.displays
 
     readonly property var defaults: ({
-        mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, barHeight: 44, workspaces: 5, workspaceStyle: "dot", terminal: "kitty",
+        mode: "dark", colorSource: "manual", accent: "#e0af68", edge: 10, barHeight: 44, workspaces: 5, workspaceStyle: "number", terminal: "kitty",
         gapsIn: 2, gapsOut: 2, border: 2, rounding: 12,
         blur: true, animations: true, inactiveOpacity: 1.0
     })
@@ -77,7 +77,7 @@ Singleton {
             property string terminal: "kitty"
             property string screenshotDir: ""
             property int workspaces: 5
-            property string workspaceStyle: "dot"
+            property string workspaceStyle: "number"
             property string mode: "dark"
             property string colorSource: "manual"
             property string accent: "#e0af68"
