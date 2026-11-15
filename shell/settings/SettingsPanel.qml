@@ -119,47 +119,56 @@ Item {
                     }
                 }
 
-                Heading { text: "Jendela"; Layout.topMargin: 18 }
-                Range { label: "Jarak antar jendela"; key: "gapsIn"; min: 0; max: 20 }
-                Range { label: "Jarak ke bingkai"; key: "gapsOut"; min: 0; max: 40 }
-                Range { label: "Tebal garis tepi"; key: "border"; min: 0; max: 6 }
-                Range { label: "Lengkung sudut"; key: "rounding"; min: 0; max: 24 }
-                Range { label: "Jendela tidak aktif"; key: "inactiveOpacity"; min: 0.5; max: 1; step: 0.05; percent: true }
-                Switch { Layout.fillWidth: true; label: "Blur"; checked: Settings.blur; onToggled: Settings.set("blur", !Settings.blur) }
-                Switch { Layout.fillWidth: true; label: "Animasi"; checked: Settings.animations; onToggled: Settings.set("animations", !Settings.animations) }
-
-                Heading { text: "Bingkai"; Layout.topMargin: 18 }
-                Range { label: "Tebal bingkai samping"; key: "edge"; min: 0; max: 24 }
-                Range { label: "Jumlah workspace"; key: "workspaces"; min: 1; max: 10 }
-                Txt { text: "Gaya nomor workspace"; font.pixelSize: 13; Layout.topMargin: 6 }
-                Segmented {
-                    Layout.topMargin: 4
-                    options: [{ v: "number", t: "1 2 3" }, { v: "dot", t: "• • •" }, { v: "roman", t: "I II III" }, { v: "kanji", t: "一 二 三" }]
-                    current: Settings.workspaceStyle
-                    onPicked: v => Settings.set("workspaceStyle", v)
+                Section {
+                    title: "Jendela"
+                    Range { label: "Jarak antar jendela"; key: "gapsIn"; min: 0; max: 20 }
+                    Range { label: "Jarak ke bingkai"; key: "gapsOut"; min: 0; max: 40 }
+                    Range { label: "Tebal garis tepi"; key: "border"; min: 0; max: 6 }
+                    Range { label: "Lengkung sudut"; key: "rounding"; min: 0; max: 24 }
+                    Range { label: "Jendela tidak aktif"; key: "inactiveOpacity"; min: 0.5; max: 1; step: 0.05; percent: true }
+                    Switch { Layout.fillWidth: true; label: "Blur"; checked: Settings.blur; onToggled: Settings.set("blur", !Settings.blur) }
+                    Switch { Layout.fillWidth: true; label: "Animasi"; checked: Settings.animations; onToggled: Settings.set("animations", !Settings.animations) }
                 }
 
-                Heading { text: "Saat ditinggal"; Layout.topMargin: 18 }
-                Txt {
-                    Layout.fillWidth: true
-                    wrapMode: Text.Wrap
-                    font.pixelSize: 12
-                    color: Theme.muted
-                    text: "Dihitung dari sentuhan terakhir. Video yang sedang diputar dan sakelar \"Tetap menyala\" di dashboard menundanya."
-                }
-                IdleChoice { label: "Redupkan layar"; key: "idleDim"; visible: Brightness.available; options: [0, 60, 120, 300] }
-                IdleChoice { label: "Kunci layar"; key: "idleLock"; options: [0, 180, 300, 600, 900] }
-                IdleChoice { label: "Matikan layar"; key: "idleScreenOff"; options: [0, 300, 600, 900, 1800] }
-                IdleChoice { label: "Tidur (suspend)"; key: "idleSuspend"; options: [0, 900, 1800, 3600] }
-                Switch { Layout.fillWidth: true; Layout.topMargin: 6; label: "Kunci saat laptop tidur / ditutup"; checked: Settings.lockOnSleep; onToggled: Settings.set("lockOnSleep", !Settings.lockOnSleep) }
-
-                Heading { text: "Layar"; Layout.topMargin: 18 }
-                Repeater {
-                    model: Displays.monitors
-                    DisplayCard { required property var modelData; m: modelData; Layout.fillWidth: true; Layout.bottomMargin: 6 }
+                Section {
+                    title: "Bingkai"
+                    Range { label: "Tebal bingkai samping"; key: "edge"; min: 0; max: 24 }
+                    Range { label: "Jumlah workspace"; key: "workspaces"; min: 1; max: 10 }
+                    Txt { text: "Gaya nomor workspace"; font.pixelSize: 13; Layout.topMargin: 6 }
+                    Segmented {
+                        Layout.topMargin: 4
+                        options: [{ v: "number", t: "1 2 3" }, { v: "dot", t: "• • •" }, { v: "roman", t: "I II III" }, { v: "kanji", t: "一 二 三" }]
+                        current: Settings.workspaceStyle
+                        onPicked: v => Settings.set("workspaceStyle", v)
+                    }
                 }
 
-                Heading { text: "Aplikasi"; Layout.topMargin: 18 }
+                Section {
+                    title: "Saat ditinggal"
+                    Txt {
+                        Layout.fillWidth: true
+                        wrapMode: Text.Wrap
+                        font.pixelSize: 12
+                        color: Theme.muted
+                        text: "Dihitung dari sentuhan terakhir. Video yang sedang diputar dan sakelar \"Tetap menyala\" di dashboard menundanya."
+                    }
+                    IdleChoice { label: "Redupkan layar"; key: "idleDim"; visible: Brightness.available; options: [0, 60, 120, 300] }
+                    IdleChoice { label: "Kunci layar"; key: "idleLock"; options: [0, 180, 300, 600, 900] }
+                    IdleChoice { label: "Matikan layar"; key: "idleScreenOff"; options: [0, 300, 600, 900, 1800] }
+                    IdleChoice { label: "Tidur (suspend)"; key: "idleSuspend"; options: [0, 900, 1800, 3600] }
+                    Switch { Layout.fillWidth: true; Layout.topMargin: 6; label: "Kunci saat laptop tidur / ditutup"; checked: Settings.lockOnSleep; onToggled: Settings.set("lockOnSleep", !Settings.lockOnSleep) }
+                }
+
+                Section {
+                    title: "Layar"
+                    Repeater {
+                        model: Displays.monitors
+                        DisplayCard { required property var modelData; m: modelData; Layout.fillWidth: true; Layout.bottomMargin: 6 }
+                    }
+                }
+
+                Section {
+                    title: "Aplikasi"
                 Txt { text: "Terminal (dipakai launcher & WiFi enterprise)"; color: Theme.muted; font.pixelSize: 13 }
                 Rectangle {
                     Layout.fillWidth: true
@@ -210,6 +219,7 @@ Item {
                             font.pixelSize: 13
                         }
                     }
+                }
                 }
 
                 Heading { text: "Wallpaper"; Layout.topMargin: 18 }
@@ -333,6 +343,43 @@ Item {
         font.capitalization: Font.AllUppercase
         color: Theme.muted
         Layout.bottomMargin: 4
+    }
+
+    // Seksi yang bisa dilipat: judul + chevron; isi tampil saat dibuka (default tertutup).
+    // Simpel di permukaan, lengkap saat dibutuhkan.
+    component Section: ColumnLayout {
+        id: sec
+        property string title
+        property bool expanded: false
+        default property alias content: inner.data
+        Layout.fillWidth: true
+        Layout.topMargin: 14
+        spacing: 4
+        Item {
+            Layout.fillWidth: true
+            implicitHeight: 22
+            Txt {
+                anchors { left: parent.left; verticalCenter: parent.verticalCenter }
+                text: sec.title
+                font.pixelSize: 11; font.letterSpacing: 2; font.capitalization: Font.AllUppercase
+                color: head.containsMouse ? Theme.text : Theme.muted
+            }
+            Txt {
+                anchors { right: parent.right; verticalCenter: parent.verticalCenter }
+                mono: true; font.pixelSize: 13
+                color: head.containsMouse ? Theme.text : Theme.muted
+                text: Icons.chevronDown
+                rotation: sec.expanded ? 180 : 0
+                Behavior on rotation { NumberAnimation { duration: 150 } }
+            }
+            MouseArea { id: head; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: sec.expanded = !sec.expanded }
+        }
+        ColumnLayout {
+            id: inner
+            Layout.fillWidth: true
+            visible: sec.expanded
+            spacing: 4
+        }
     }
 
     // Satu baris pengaturan angka: label di atas, slider di bawah
