@@ -84,6 +84,10 @@ fi
 # 3. Sambungkan ke Hyprland (shortcut + jalan otomatis)
 echo -e "\n${B}3/3 Hyprland${N}"
 mkdir -p "$HYPR"
+# Layar kunci tams-shell (pasang kalau belum ada, atau ganti yang hasil generate tams/viaOS)
+if [ ! -f "$HYPR/hyprlock.conf" ] || head -1 "$HYPR/hyprlock.conf" | grep -qE "viaOS|tams-shell"; then
+  cp "$REPO/hypr/hyprlock.conf" "$HYPR/hyprlock.conf" && ok "layar kunci -> $HYPR/hyprlock.conf"
+fi
 if [ -f "$HYPR/hyprland.lua" ]; then
   cp "$REPO/hypr/tams-shell.lua" "$HYPR/tams-shell.lua"
   if ! grep -q 'require("tams-shell")' "$HYPR/hyprland.lua"; then

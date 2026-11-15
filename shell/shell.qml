@@ -22,6 +22,9 @@ ShellRoot {
     // Redupkan / kunci / matikan layar / tidur saat ditinggal
     IdleWatcher {}
 
+    // Jaga symlink wallpaper layar kunci tetap terbarui (hyprlock membaca ~/.config/tams/lock)
+    Connections { target: LockWallpaper }
+
     // Perintah dari luar:  qs -c tams ipc call tams launcher   (atau dashboard / wifi / bluetooth / audio / keys / screenshot area|screen|all / caffeine / settings / wallpaper / lock / close)
     IpcHandler {
         target: "tams"

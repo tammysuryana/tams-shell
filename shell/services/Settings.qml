@@ -14,6 +14,7 @@ Singleton {
     readonly property string wallpaperPath: adapter.wallpaper
     // Path file biasa (bawaan pun), untuk yang tidak bisa membaca alamat qs: seperti ColorQuantizer
     readonly property string wallpaperFile: adapter.wallpaper !== "" ? adapter.wallpaper : Quickshell.shellPath("assets/wallpaper.jpg")
+    readonly property string lockWallpaper: adapter.lockWallpaper   // kosong = ikut wallpaper desktop
     readonly property string terminal: adapter.terminal
     readonly property string screenshotDir: adapter.screenshotDir   // kosong = ~/Pictures/Screenshots
     readonly property int workspaces: adapter.workspaces
@@ -78,6 +79,7 @@ Singleton {
         JsonAdapter {
             id: adapter
             property string wallpaper: ""
+            property string lockWallpaper: ""
             property string terminal: "kitty"
             property string screenshotDir: ""
             property int workspaces: 5
