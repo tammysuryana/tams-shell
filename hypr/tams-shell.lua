@@ -29,10 +29,18 @@ do
         hl.bind("SUPER + " .. btn, cancel, { non_consuming = true })
     end
 end
-hl.bind("SUPER + A", hl.dsp.global("tams:dashboard"), { description = "tams-shell: dashboard" })
+-- Panel shell
+hl.bind("SUPER + N", hl.dsp.global("tams:dashboard"), { description = "tams-shell: dashboard" })
+hl.bind("SUPER + A", hl.dsp.global("tams:dashboard"))   -- alias (tersembunyi) agar muscle-memory end4 jalan
 hl.bind("SUPER + I", hl.dsp.global("tams:settings"), { description = "tams-shell: pengaturan" })
-hl.bind("SUPER + Escape", hl.dsp.global("tams:settings"), { description = "tams-shell: pengaturan" })
+hl.bind("SUPER + Escape", hl.dsp.global("tams:settings"))   -- alias
 hl.bind("SUPER + slash", hl.dsp.global("tams:keys"), { description = "tams-shell: keys" })
+-- Sesi & tampilan
+hl.bind("SUPER + L", hl.dsp.global("tams:lock"), { description = "tams-shell: lock" })
+hl.bind("CTRL + SUPER + T", hl.dsp.global("tams:wallpaper"), { description = "tams-shell: wallpaper" })
+hl.bind("CTRL + SUPER + SHIFT + D", hl.dsp.global("tams:theme"), { description = "tams-shell: theme" })
+hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd("pkill -x qs; sleep 1; qs -c tams & disown"), { description = "tams-shell: restart" })
+-- Screenshot
 hl.bind("SUPER + SHIFT + S", hl.dsp.global("tams:screenshotArea"), { description = "tams-shell: screenshotArea" })
 hl.bind("Print", hl.dsp.global("tams:screenshotScreen"), { description = "tams-shell: screenshotScreen" })
 hl.bind("SHIFT + Print", hl.dsp.global("tams:screenshotAll"), { description = "tams-shell: screenshotAll" })
