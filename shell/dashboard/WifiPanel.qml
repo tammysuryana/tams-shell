@@ -73,8 +73,12 @@ ColumnLayout {
         }
     }
 
-    function submit(n, psk) {
+    // Submit kata sandi untuk jaringan yang namanya tersimpan di prompt. Objek jaringan dicari
+    // ulang SAAT submit, karena NetworkManager bisa membuatnya ulang ketika memindai.
+    function submitCurrent(psk) {
         if (psk.length < 8) { root.message = "Kata sandi minimal 8 karakter"; return }
+        const n = Net.wifiDevice ? Net.wifiDevice.networks.values.find(x => x.name === root.prompt) : null
+        if (!n) { root.message = "Jaringan tidak ditemukan lagi, coba lagi"; return }
         root.message = ""
         root.trying = n
         root.prompt = ""
@@ -151,6 +155,55 @@ ColumnLayout {
                 font.pixelSize: 12
                 wrapMode: Text.Wrap
             }
+
+            // Kolom kata sandi DI LUAR daftar: tidak terpengaruh pembaruan daftar / objek saat memindai,
+            // jadi fokus & ketikan tidak hilang saat NetworkManager memperbarui jaringan.
+            Item {
+                Layout.fillWidth: true
+                Layout.topMargin: 2
+                implicitHeight: root.prompt !== "" ? 46 : 0
+                visible: root.prompt !== ""
+                Rectangle {
+                    anchors { fill: parent; leftMargin: 4; rightMargin: 4 }
+                    radius: 12
+                    color: Theme.frame
+                    border.color: pw.activeFocus ? Theme.accent : Theme.line
+                    TextInput {
+                        id: pw
+                        anchors { left: parent.left; leftMargin: 12; right: eye.left; rightMargin: 8; verticalCenter: parent.verticalCenter }
+                        color: Theme.text
+                        font.family: Theme.font
+                        font.pixelSize: Theme.fontSize
+                        echoMode: eye.shown ? TextInput.Normal : TextInput.Password
+                        selectionColor: Theme.accent
+                        clip: true
+                        Keys.onReturnPressed: root.submitCurrent(text)
+                        Keys.onEnterPressed: root.submitCurrent(text)
+                        Keys.onEscapePressed: root.prompt = ""
+                        onTextChanged: root.pskDraft = text
+                        Component.onCompleted: text = root.pskDraft
+                        Connections {
+                            target: root
+                            function onPromptChanged() { if (root.prompt !== "") { pw.text = root.pskDraft; pw.forceActiveFocus() } }
+                        }
+                        Txt { visible: pw.text === ""; width: pw.width; elide: Text.ElideRight; text: "Kata sandi " + root.prompt + ", lalu Enter"; color: Theme.muted }
+                    }
+                    Txt {
+                        id: eye
+                        property bool shown: false
+                        anchors { right: go.left; rightMargin: 10; verticalCenter: parent.verticalCenter }
+                        mono: true; font.pixelSize: 16; color: Theme.muted
+                        text: shown ? Icons.eyeOff : Icons.eye
+                        MouseArea { anchors { fill: parent; margins: -6 } cursorShape: Qt.PointingHandCursor; onClicked: eye.shown = !eye.shown }
+                    }
+                    SmallBtn {
+                        id: go
+                        anchors { right: parent.right; rightMargin: 6; verticalCenter: parent.verticalCenter }
+                        label: "Sambung"
+                        onClicked: root.submitCurrent(pw.text)
+                    }
+                }
+            }
         }
     }
 
@@ -160,8 +213,6 @@ ColumnLayout {
         readonly property var n: modelData
         readonly property bool asking: root.prompt === n.name
         width: ListView.view.width
-
-        onAskingChanged: if (asking) { pw.text = root.pskDraft; pw.forceActiveFocus() }
 
         Rectangle {
             width: parent.width
@@ -206,49 +257,6 @@ ColumnLayout {
                 visible: mouse.containsMouse || hoverA.containsMouse || hoverB.containsMouse
                 SmallBtn { id: hoverA; visible: row.n.connected; label: "Putus"; onClicked: row.n.disconnect() }
                 SmallBtn { id: hoverB; visible: row.n.known; label: "Lupakan"; onClicked: row.n.forget() }
-            }
-        }
-
-        // Kolom kata sandi untuk jaringan baru
-        Item {
-            width: parent.width
-            height: row.asking ? 46 : 0
-            visible: row.asking
-            Rectangle {
-                anchors { fill: parent; topMargin: 4; leftMargin: 6; rightMargin: 6 }
-                radius: 12
-                color: Theme.frame
-                border.color: pw.activeFocus ? Theme.accent : Theme.line
-                TextInput {
-                    id: pw
-                    anchors { left: parent.left; leftMargin: 12; right: eye.left; rightMargin: 8; verticalCenter: parent.verticalCenter }
-                    color: Theme.text
-                    font.family: Theme.font
-                    font.pixelSize: Theme.fontSize
-                    echoMode: eye.shown ? TextInput.Normal : TextInput.Password
-                    selectionColor: Theme.accent
-                    clip: true
-                    Keys.onReturnPressed: root.submit(row.n, text)
-                    Keys.onEnterPressed: root.submit(row.n, text)
-                    Keys.onEscapePressed: root.prompt = ""
-                    onTextChanged: if (row.asking) root.pskDraft = text
-                    Component.onCompleted: if (row.asking) { text = root.pskDraft; forceActiveFocus() }
-                    Txt { visible: pw.text === ""; text: "Kata sandi, lalu Enter"; color: Theme.muted }
-                }
-                Txt {
-                    id: eye
-                    property bool shown: false
-                    anchors { right: go.left; rightMargin: 10; verticalCenter: parent.verticalCenter }
-                    mono: true; font.pixelSize: 16; color: Theme.muted
-                    text: shown ? Icons.eyeOff : Icons.eye
-                    MouseArea { anchors { fill: parent; margins: -6 } cursorShape: Qt.PointingHandCursor; onClicked: eye.shown = !eye.shown }
-                }
-                SmallBtn {
-                    id: go
-                    anchors { right: parent.right; rightMargin: 6; verticalCenter: parent.verticalCenter }
-                    label: "Sambung"
-                    onClicked: root.submit(row.n, pw.text)
-                }
             }
         }
     }
