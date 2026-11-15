@@ -12,8 +12,10 @@ Item {
     property bool open: false
     property int panelWidth: 1100
     property int maxHeight: 700        // lebih tinggi dari ini: isinya digulir
-    // Lebar tetap tiap kolom (3 kolom, margin 28, jarak antarkolom 28)
-    readonly property real colW: (panelWidth - 56 - 56) / 3
+    // Lebar tetap tiap kolom (margin 28, jarak antarkolom 28)
+    // jumlah kolom mengikuti lebar panel (layar/skala kecil: 2 atau 1 kolom)
+    readonly property int ncols: panelWidth >= 900 ? 3 : (panelWidth >= 600 ? 2 : 1)
+    readonly property real colW: (panelWidth - 56 - 28 * (ncols - 1)) / ncols
     readonly property int r: Theme.panelRadius
 
     width: panelWidth + r * 2
@@ -68,10 +70,11 @@ Item {
         return out
     }
 
-    // Bagi bagian ke 3 kolom serata mungkin (yang terbanyak dulu), urutan asli tetap dijaga
+    // Bagi bagian ke beberapa kolom serata mungkin (yang terbanyak dulu), urutan asli tetap dijaga
     readonly property var columns: {
         const secs = Keybinds.sections.map((s, i) => ({ s: s, i: i, n: s.rows.length + 2 }))
-        const cols = [[], [], []], load = [0, 0, 0]
+        const n = root.ncols
+        const cols = Array.from({ length: n }, () => []), load = new Array(n).fill(0)
         for (const x of secs.slice().sort((a, b) => b.n - a.n)) {
             const c = load.indexOf(Math.min(...load))
             cols[c].push(x)

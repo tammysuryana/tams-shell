@@ -55,7 +55,7 @@ Singleton {
         launcher: "Launcher: cari aplikasi", dashboard: "Dashboard", settings: "Pengaturan", pengaturan: "Pengaturan",
         keys: "Daftar pintasan ini", launcherTap: "Launcher: cari aplikasi", lock: "Kunci layar",
         wallpaper: "Pilih wallpaper", theme: "Ganti gelap / terang", caffeine: "Tetap menyala",
-        restart: "Mulai ulang shell",
+        restart: "Mulai ulang shell", power: "Menu daya (kunci / tidur / keluar / mulai ulang / matikan)",
         screenshotArea: "Screenshot area / jendela", screenshotScreen: "Screenshot layar ini", screenshotAll: "Screenshot semua layar"
     })
 
